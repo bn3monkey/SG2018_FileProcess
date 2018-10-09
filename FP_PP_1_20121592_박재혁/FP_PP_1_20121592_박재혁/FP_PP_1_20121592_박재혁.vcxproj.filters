@@ -108,5 +108,8 @@
     <None Include="listOfPurchase.dat">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="temp_file.dat">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>

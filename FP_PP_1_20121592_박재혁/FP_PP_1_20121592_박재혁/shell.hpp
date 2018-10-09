@@ -1,6 +1,5 @@
 #pragma once
 #include "Purchase.hpp"
-#include "SchemeList.hpp"
 #include <vector>
 #include <fstream>
 #include "recfile.h"
@@ -8,7 +7,7 @@
 //#define METHOD_TEST 
 
 template<class T>
-int readText(const char* filename, SchemeList<T>& list)
+int showScheme(const char* filename)
 {
 	ifstream ifs(filename);
 	if (ifs.fail())
@@ -21,74 +20,55 @@ int readText(const char* filename, SchemeList<T>& list)
 	ifs >> n;
 	ifs.ignore(numeric_limits<streamsize>::max(), '\n');
 
-	for (int i = 0; i < n; i++)
+	for (int idx = 0; idx < n && idx < 10; idx++)
 	{
-		T s;
-		ifs >> s;
-		if(list.push_back(s))
-			cout << "Record Duplication " << endl;
+		T data;
+		ifs >> data;
+		cout << data;
 	}
 	return 0;
 }
 
 template<class T>
-int readRecord(char* recordname, SchemeList<T>& list)
+int SchemeTest(const char* txtname, char* datname)
 {
-	DelimFieldBuffer buffer('|', STDMAXBUF);
-	RecordFile <T> SchemeFile(buffer);
-
-	SchemeFile.Open(recordname, ios::in);
-	int idx = 0;
-	while(idx != -1)
+	ifstream ifs(txtname);
+	if (ifs.fail())
 	{
-		T s;
-		idx = SchemeFile.Read(s);
-		list.push_back(s);
+		cout << "File Open error!" << endl;
+		return -1;
 	}
-	SchemeFile.Close();
-	return 0;
-}
 
-template<class T>
-int showScheme(SchemeList<T> list)
-{
-	int idx, size = list.size();
-	for (idx = 0; idx < size; idx++)
-	{
-		if (idx >= 10) break;
+	int n, len = 0;
+	ifs >> n;
+	ifs.ignore(numeric_limits<streamsize>::max(), '\n');
 
-		auto obj = list[idx];
-		cout << obj;
-	}
-	return 0;
-}
-
-template<class T>
-int SchemeTest(SchemeList<T>& list, char* recordfile)
-{
 	RecordFile <T> file(DelimFieldBuffer('|', STDMAXBUF));
-	file.Create(recordname, ios::out | ios::trunc);
+	file.Create(datname, ios::in | ios::out | ios::trunc);
 	
-	int idx, size = list.size();
-	for (idx = 0; idx < size; idx++)
+	for (int idx = 0; idx < n; idx++)
 	{
-		auto obj = list[idx];
+		T data;
+		ifs >> data;
 
-		int recaddr;
-		if ((recaddr = file.Write(obj)) == -1)
+		int recaddr = file.Write_Unique(data);
+		if (recaddr == -1)
 			cout << "Write Error!" << endl;
+		else if(recaddr == -2)
+			cout << "Write Duplicate!" << endl;
 		else
 		{
 			cout << "Write at " << recaddr << endl;
+			len++;
 		}
 	}
 	file.Close();
 
-	file.Open(recordfile, ios::in);
-	for (int i = 0; i < size && i < 10; i++)
+	file.Open(datname, ios::in);
+	for (int i = 0; i < len && i < 10; i++)
 	{
 		T s;
-		SchemeFile.Read(s);
+		file.Read(s);
 		cout << s;
 	}
 	file.Close();
@@ -118,7 +98,3 @@ enum prog_name
 };
 
 extern int (*prog_table[prog_len])();
-
-extern SchemeList<Member> mlist;
-extern SchemeList<Lecture> llist;
-extern SchemeList<Purchase> plist;

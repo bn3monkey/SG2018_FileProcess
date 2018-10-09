@@ -17,6 +17,20 @@ public:
 	Purchase();
 	Purchase(const Scheme& s);
 
+	Purchase& operator =(const Purchase &s)
+	{ 
+		this->copy(&s);
+		return *this; 
+	}
+	bool operator ==(const Purchase &s)
+	{
+		return this->compare(&s) == 0 ? true : false;
+	}
+	bool operator !=(const Purchase &s)
+	{
+		return this->compare(&s) == 0 ? false : true;
+	}
+
 	Purchase& operator =(const Scheme &s);
 	bool operator ==(const Scheme &s);
 	bool operator !=(const Scheme &s);

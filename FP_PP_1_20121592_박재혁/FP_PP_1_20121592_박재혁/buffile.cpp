@@ -16,6 +16,7 @@ int BufferFile::Open (char * filename, int mode)
 	// these modes are not allowed when opening an existing file
 	if (mode&ios::trunc) return FALSE;
 
+	this->filename = std::string(filename);
 	File . open (filename, mode|ios::in|ios::binary);	
 	if (! File.good()) return FALSE;
 	File . seekg(0, ios::beg); File . seekp(0, ios::beg);
@@ -32,6 +33,7 @@ int BufferFile::Create (char * filename, int mode)
 // use ios::nocreate to ensure that no file exists
 {
 	if (!(mode & ios::out)) return FALSE; // must include ios::out
+	this->filename = std::string(filename);
 	File . open (filename, mode|ios::in|ios::out|ios::binary);
 	if (!File . good()) 
 	{

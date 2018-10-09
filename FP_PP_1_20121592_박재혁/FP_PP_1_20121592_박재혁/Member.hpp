@@ -20,6 +20,20 @@ public:
 	Member();
 	Member(const Scheme& s);
 
+	Member& operator =(const Member &s)
+	{
+		this->copy(&s);
+		return *this;
+	}
+	bool operator ==(const Member &s)
+	{
+		return this->compare(&s) == 0 ? true : false;
+	}
+	bool operator !=(const Member &s)
+	{
+		return this->compare(&s) == 0 ? false : true;
+	}
+
 	Member& operator =(const Scheme &s);
 	bool operator ==(const Scheme &s);
 	bool operator !=(const Scheme &s);

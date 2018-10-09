@@ -2,13 +2,9 @@
 
 using namespace std;
 
-SchemeList<Member> mlist;
-SchemeList<Lecture> llist;
-SchemeList<Purchase> plist;
-
-RecordFile <Member> mfile;
-RecordFile <Lecture> lfile;
-RecordFile <Purchase> pfile;
+//RecordFile <Member> mfile;
+//RecordFile <Lecture> lfile;
+//RecordFile <Purchase> pfile;
 
 int End()
 {
@@ -18,72 +14,66 @@ int End()
 }
 int showMember()
 {
-	readText<Member>("listOfMember.txt", mlist);
 	cout << "--Show Member--" << endl;
-	return showScheme<Member>(mlist);
+	return showScheme<Member>("listOfMember.txt");
 }
 int MemberTest()
 {
-	readText<Member>("listOfMember.txt", mlist);
 	cout << "--Member Test--" << endl;
-	return SchemeTest<Member>(mlist, "listOfMember.dat");
+	return SchemeTest<Member>("listOfMember.txt" , "listOfMember.dat");
 }
 
 int showLecture()
 {
-	readText<Lecture>("listOfLecture.txt", llist);
 	cout << "--Show Member--" << endl;
-	return showScheme<Lecture>(llist);
+	return showScheme<Lecture>("listOfLecture.txt");
 }
 int LectureTest()
 {
-	readText<Lecture>("listOfLecture.txt", llist);
 	cout << "--Lecture Test--" << endl;
-	return SchemeTest<Lecture>(llist, "listOfLecture.dat");
+	return SchemeTest<Lecture>("listOfLecture.txt", "listOfLecture.dat");
 }
 
 int showPurchase()
 {
-	readText<Purchase>("listOfPurchase.txt", plist);
 	cout << "--Purchase Test--" << endl;
-	return showScheme<Purchase>(plist);
+	return showScheme<Purchase>("listOfPurchase.txt");
 }
 int PurchaseTest()
 {
-	readText<Purchase>("listOfPurchase.txt", plist);
 	cout << "--Purchase Test--" << endl;
-	return SchemeTest<Purchase>(plist, "listOfPurchase.dat");
+	return SchemeTest<Purchase>("listOfPurchase.txt", "listOfPurchase.dat");
 }
 int LecturPurchaseSystem()
 {
-	readRecord<Member>("listOfMember.dat", mlist);
-	cout << "-- Member list --" << endl;
-	showScheme<Member>(mlist);
-	cout << endl;
 
-	readRecord<Lecture>("listOfLecture.dat", llist);
-	cout << "-- Lecture list --" << endl;
-	showScheme<Lecture>(llist);
-	cout << endl;
-
-	readRecord<Purchase>("listOfPurchase.dat", plist);
-	cout << "-- Purchase list --" << endl;
-	showScheme<Purchase>(plist);
-	cout << endl;
-
+	
 	RecordFile <Member> MemberFile(DelimFieldBuffer('|', STDMAXBUF));
-	MemberFile.Open("listOfMember.dat", ios::in);
+	MemberFile.Open("listOfMember.dat", ios::in | ios::out);
 
-	int idx = 0;
-	idx = MemberFile.Find(mlist[2]);
-	cout << "readaddr : " << idx << endl;
+	for (int read_addr = 0, idx = 0; read_addr != -1;idx++)
+	{
+		Member m;
+		read_addr = MemberFile.Find(idx, m);
+		if(read_addr != -1)
+		cout << m;
+	}
 
-	Member s;
-	MemberFile.Read(s, idx);
-	if (s == mlist[2])
-		cout << "Same!" << endl;
+	Member m2;
+	MemberFile.Find(2, m2);
+	cout << "---\n" << m2 << "---\n";
 
+	MemberFile.Delete(m2);
 
+	for (int read_addr = 0, idx = 0; read_addr != -1; idx++)
+	{
+		Member m;
+		read_addr = MemberFile.Find(idx, m);
+		if (read_addr != -1)
+			cout << m;
+	}
+
+	MemberFile.Close();
 	return 0;
 }
 

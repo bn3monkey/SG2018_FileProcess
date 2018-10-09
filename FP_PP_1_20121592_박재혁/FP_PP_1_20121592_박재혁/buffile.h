@@ -25,6 +25,9 @@ class BufferFile
 // 	this record address can be used to read that record
 //	the values of the record address depend on the type of file and buffer
 {
+protected:
+	std::string filename;
+
    public:
 	BufferFile (IOBuffer &); // create with a buffer
 

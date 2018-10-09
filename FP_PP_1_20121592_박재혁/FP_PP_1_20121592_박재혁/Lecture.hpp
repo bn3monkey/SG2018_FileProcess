@@ -26,6 +26,21 @@ public:
 	bool operator ==(const Scheme &s);
 	bool operator !=(const Scheme &s);
 
+	Lecture& operator =(const Lecture &s)
+	{
+		this->copy(&s);
+		return *this;
+	}
+	bool operator ==(const Lecture &s)
+	{
+		return this->compare(&s) == 0 ? true : false;
+	}
+	bool operator !=(const Lecture &s)
+	{
+		return this->compare(&s) == 0 ? false : true;
+	}
+
+
 	inline void update_lectureid(std::string new_lectureid) { memcpy(this->LectureID, new_lectureid.c_str(), sizeof(char) * (LECID_LEN + 1)); }
 	inline void update_subject(std::string new_subject) { this->Subject = new_subject; }
 	inline void update_level(std::string new_level) 
