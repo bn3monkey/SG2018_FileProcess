@@ -27,6 +27,7 @@ class BufferFile
 {
 protected:
 	std::string filename;
+	int mode;
 
    public:
 	BufferFile (IOBuffer &); // create with a buffer

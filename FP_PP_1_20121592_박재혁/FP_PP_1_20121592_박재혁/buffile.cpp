@@ -17,12 +17,15 @@ int BufferFile::Open (char * filename, int mode)
 	if (mode&ios::trunc) return FALSE;
 
 	this->filename = std::string(filename);
+	this->mode = mode;
+
 	File . open (filename, mode|ios::in|ios::binary);	
 	if (! File.good()) return FALSE;
 	File . seekg(0, ios::beg); File . seekp(0, ios::beg);
 	HeaderSize = ReadHeader();
 	if (!HeaderSize) // no header and file opened for output
 		return FALSE;
+
 	File . seekp (HeaderSize, ios::beg);
 	File . seekg (HeaderSize, ios::beg);
 	return File . good();
@@ -33,7 +36,10 @@ int BufferFile::Create (char * filename, int mode)
 // use ios::nocreate to ensure that no file exists
 {
 	if (!(mode & ios::out)) return FALSE; // must include ios::out
+	
 	this->filename = std::string(filename);
+	this->mode = mode;
+
 	File . open (filename, mode|ios::in|ios::out|ios::binary);
 	if (!File . good()) 
 	{

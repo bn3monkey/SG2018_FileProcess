@@ -16,7 +16,7 @@ int main()
 	while (prog_num)
 	{
 		cin >> prog_num;
-		if (prog_num)
+		if (prog_num>=0 && prog_num < prog_len)
 			prog_table[prog_num]();
 	}
 	return 0;

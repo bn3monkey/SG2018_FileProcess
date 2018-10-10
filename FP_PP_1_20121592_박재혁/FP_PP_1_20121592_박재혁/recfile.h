@@ -61,21 +61,20 @@ int RecordFile<RecType>::Append (const RecType & record, int recaddr = -1)
 template <class RecType>
 int RecordFile<RecType>::Find(const RecType & record)
 {
-	auto file_pos = File.tellg();
+	int file_pos = File.tellg();
 
 	File.seekg(HeaderSize, ios::beg);
 
-	int read_addr = 0;
+	int src_addr = 0;
 	RecType ptr;
-	while (read_addr != -1)
+	for (src_addr = Read(ptr); src_addr != -1; src_addr = Read(ptr))
 	{
-		read_addr = Read(ptr);
 		if (ptr == record)
 			break;
 	}
 
 	File.seekg(file_pos);
-	return read_addr;
+	return src_addr;
 }
 
 template <class RecType>
@@ -85,20 +84,20 @@ int RecordFile<RecType>::Find(int idx, RecType& found)
 
 	File.seekg(HeaderSize, ios::beg);
 
-	int prev_addr = 0, read_addr = 0;
+	int src_addr, count = 0;
 	RecType ptr;
-	for (int i =0; read_addr != -1 && i <= idx; i++)
+	for (src_addr = Read(ptr); src_addr != -1; src_addr = Read(ptr), count++)
 	{
-		prev_addr = read_addr;
-		read_addr = Read(ptr);
+		if (count == idx)
+			break;
 	}
 	
 	File.seekg(file_pos);
 	
-	if (read_addr == -1)
+	if (src_addr == -1)
 		return -1;
 	found = ptr;
-	return prev_addr;
+	return src_addr;
 }
 
 template <class RecType>
@@ -118,39 +117,36 @@ int RecordFile<RecType>::Delete(int read_addr = -1)
 		return -1;
 	
 	BufferFile::Rewind();
-
 	RecType ptr;
-	int dest_addr = read_addr;
-	int src_addr = dest_addr;
+	int src_addr;
 
 	fstream tempfile;
-	tempfile.open("temp_file.dat", ios::out);
-	while (src_addr != -1)
+	tempfile.open("temp_file.dat", ios::out | ios::trunc | ios::binary);
+	if (!tempfile.good())
 	{
-		src_addr = Read(ptr);
-		
-		if( ptr.Pack(Buffer) == -1)
-			return -1;
+		File.close();
+		return -1;
+	}
+	HeaderSize = Buffer.WriteHeader(tempfile);
+	if (HeaderSize == 0) return -1;
+
+	for (src_addr = Read(ptr); src_addr != -1; src_addr = Read(ptr))
+	{
+		if (src_addr == read_addr) continue;
+		if (!(ptr.Pack(Buffer)))
+			break;
 		if (Buffer.Write(tempfile) == -1)
-			return -1;
+			break;
 	}
 	tempfile.close();
+	this->Close();
 
-	tempfile.open("temp_file.dat", ios::in);
-	File.seekp(dest_addr);
-	
-	while(dest_addr != -1)
-	{
-		if (Buffer.Read(tempfile) == -1)
-			return -1;
-		if (ptr.Unpack(Buffer) == -1)
-			return -1;
+	remove(this->filename.c_str());
+	rename("temp_file.dat", this->filename.c_str());
 
-		dest_addr = Write(ptr);
-	}
-	tempfile.close();
-	
-	BufferFile::Rewind();
+	if (!this->Open((char *)(this->filename.c_str()), this->mode))
+		return -1;
+	return 0;
 }
 template <class RecType>
 int RecordFile<RecType>::Delete(const RecType& record)

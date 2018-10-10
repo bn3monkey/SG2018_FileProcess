@@ -49,7 +49,7 @@ int LecturPurchaseSystem()
 
 	
 	RecordFile <Member> MemberFile(DelimFieldBuffer('|', STDMAXBUF));
-	MemberFile.Open("listOfMember.dat", ios::in | ios::out);
+	MemberFile.Open("listOfMember.dat", ios::out);
 
 	for (int read_addr = 0, idx = 0; read_addr != -1;idx++)
 	{
@@ -58,13 +58,19 @@ int LecturPurchaseSystem()
 		if(read_addr != -1)
 		cout << m;
 	}
+	MemberFile.Close();
 
+	MemberFile.Open("listOfMember.dat", ios::out);
 	Member m2;
 	MemberFile.Find(2, m2);
 	cout << "---\n" << m2 << "---\n";
+	MemberFile.Close();
 
+	MemberFile.Open("listOfMember.dat", ios::in | ios::out);
 	MemberFile.Delete(m2);
+	MemberFile.Close();
 
+	MemberFile.Open("listOfMember.dat", ios::out);
 	for (int read_addr = 0, idx = 0; read_addr != -1; idx++)
 	{
 		Member m;
@@ -72,7 +78,6 @@ int LecturPurchaseSystem()
 		if (read_addr != -1)
 			cout << m;
 	}
-
 	MemberFile.Close();
 	return 0;
 }

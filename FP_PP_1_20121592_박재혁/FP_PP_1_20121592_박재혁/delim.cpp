@@ -1,6 +1,5 @@
 // deltext.cc
 #include "delim.h"
-#include <string.h>
 
 //class DelimFieldBuffer
 
@@ -72,6 +71,15 @@ int DelimFieldBuffer :: ReadHeader (istream & stream)
 		return TRUE;
 	}
 	if (ch != Delim) return FALSE;
+	
+	char buf[RECORD_PAGE];
+	stream.read(buf, deleted_record::header_size());
+	if (!stream.good()) return FALSE;
+	if (head.extract(buf) == false) return FALSE;
+	// read and check the record description
+
+	stream.get(ch);
+
 	return (int)stream . tellg ();
 }
 
@@ -83,6 +91,12 @@ int DelimFieldBuffer :: WriteHeader (ostream & stream) const
 	result = VariableLengthBuffer::WriteHeader (stream);
 	if (!result) return FALSE;
 	stream . put (Delim);
+
+	int current = (int)stream.tellp();
+	deleted_record head(0, current, current+deleted_record::header_size());
+	stream.write(head.makeRecord(), deleted_record::header_size());
+	stream.put(Delim);
+
 	return (int)stream . tellp ();
 }
 
