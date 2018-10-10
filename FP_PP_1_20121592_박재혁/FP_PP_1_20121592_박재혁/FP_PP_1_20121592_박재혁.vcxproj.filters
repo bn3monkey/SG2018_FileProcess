@@ -57,6 +57,9 @@
     <ClInclude Include="SchemeList.hpp">
       <Filter>소스 파일\BasicClass</Filter>
     </ClInclude>
+    <ClInclude Include="recordform.hpp">
+      <Filter>소스 파일\BufferClass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffile.cpp">

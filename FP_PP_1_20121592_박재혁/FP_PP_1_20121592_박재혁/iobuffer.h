@@ -3,6 +3,7 @@
 #define IOBUFFER_H
 #include <stdlib.h>
 #include <iostream>
+#include "recordform.hpp"
 
 #ifndef FALSE
 #define FALSE (0)

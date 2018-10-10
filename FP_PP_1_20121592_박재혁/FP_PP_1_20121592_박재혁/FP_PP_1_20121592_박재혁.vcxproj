@@ -112,6 +112,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="buffile.h" />
+    <ClInclude Include="recordform.hpp" />
     <ClInclude Include="delim.h" />
     <ClInclude Include="iobuffer.h" />
     <ClInclude Include="Lecture.hpp" />

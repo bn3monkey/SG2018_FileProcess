@@ -51,6 +51,12 @@ int VariableLengthBuffer :: Write (ostream & stream) const
 	return recaddr;
 }
 
+int VariableLengthBuffer::Delete(ostream &stream)
+{
+	int recaddr = (int)stream.tellp();
+	return recaddr;
+}
+
 const char * headerStr = "Variable";
 //const int headerSize = strlen (headerStr);
 const int headerSize = 8;
