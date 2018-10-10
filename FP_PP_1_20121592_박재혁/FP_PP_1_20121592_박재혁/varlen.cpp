@@ -64,8 +64,11 @@ int VariableLengthBuffer :: Write (iostream & stream)
 	deleted_record start, end;
 
 	//2. Get current record states
+	
+	
 	char page[RECORD_PAGE+1];
 	stream.read(page, RECORD_PAGE);
+	
 	
 	if (stream.good() || stream.eof())
 	{
@@ -96,6 +99,9 @@ int VariableLengthBuffer :: Write (iostream & stream)
 		}
 		else
 		{
+			if (stream.eof())
+				stream.clear();
+
 			page_num = (BufferSize + 2) / RECORD_PAGE + 1;
 			if (page_num > MAX_PAGE)
 				return -1;

@@ -61,6 +61,9 @@ int RecordFile<RecType>::Append (const RecType & record, int recaddr = -1)
 template <class RecType>
 int RecordFile<RecType>::Find(const RecType & record)
 {
+	int save1 = File.tellg();
+	int save2 = File.tellp();
+
 	Rewind();
 	int src_addr = 0;
 	RecType ptr;
@@ -70,16 +73,16 @@ int RecordFile<RecType>::Find(const RecType & record)
 			break;
 	}
 
-	Rewind();
+	File.seekg(save1);
+	File.seekp(save2);
 	return src_addr;
 }
 
 template <class RecType>
 int RecordFile<RecType>::Find(int idx, RecType& found)
 {
-	auto file_pos = File.tellg();
-
-	File.seekg(HeaderSize, ios::beg);
+	int save1 = File.tellg();
+	int save2 = File.tellp();
 
 	int src_addr, count = 0;
 	RecType ptr;
@@ -89,7 +92,8 @@ int RecordFile<RecType>::Find(int idx, RecType& found)
 			break;
 	}
 	
-	File.seekg(file_pos);
+	File.seekg(save1);
+	File.seekp(save2);
 	
 	if (src_addr == -1)
 		return -1;
