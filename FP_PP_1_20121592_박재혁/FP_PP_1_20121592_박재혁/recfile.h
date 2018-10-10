@@ -61,10 +61,7 @@ int RecordFile<RecType>::Append (const RecType & record, int recaddr = -1)
 template <class RecType>
 int RecordFile<RecType>::Find(const RecType & record)
 {
-	int file_pos = File.tellg();
-
-	File.seekg(HeaderSize, ios::beg);
-
+	Rewind();
 	int src_addr = 0;
 	RecType ptr;
 	for (src_addr = Read(ptr); src_addr != -1; src_addr = Read(ptr))
@@ -73,7 +70,7 @@ int RecordFile<RecType>::Find(const RecType & record)
 			break;
 	}
 
-	File.seekg(file_pos);
+	Rewind();
 	return src_addr;
 }
 

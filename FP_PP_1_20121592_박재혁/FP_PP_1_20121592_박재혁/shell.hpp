@@ -52,6 +52,7 @@ int SchemeTest(const char* txtname, char* datname)
 		ifs >> data;
 
 		int recaddr = file.Write_Unique(data);
+		//int recaddr = file.Write(data);
 		if (recaddr == -1)
 			cout << "Write Error!" << endl;
 		else if(recaddr == -2)

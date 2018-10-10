@@ -50,7 +50,7 @@ int IOBuffer::DRead (istream & stream, int recref)
 	return Read (stream);
 }
 
-int IOBuffer::DWrite (ostream & stream, int recref) const
+int IOBuffer::DWrite (iostream & stream, int recref)
 // write specified record
 {
 	stream . seekp (recref, ios::beg);

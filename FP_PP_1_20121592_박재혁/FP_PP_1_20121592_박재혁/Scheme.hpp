@@ -7,7 +7,7 @@
 using namespace std;
 
 #define CAST_ERROR -1234
-#define STDMAXBUF 100
+#define STDMAXBUF 1000
 
 class Scheme
 {

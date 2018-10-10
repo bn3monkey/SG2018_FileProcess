@@ -6,24 +6,32 @@
 class enable_record
 {
 	int count = 0;
-	char buffer[3];
+	char buffer[4];
 
 public:
 	enable_record(int idx = 1)
 	{
+		
 		if (idx > 0 && idx <= MAX_PAGE)
-			buffer[0] = (char)idx;
+		{
+			buffer[0] = (char)idx + '0';
+			count = idx;
+		}
 		else
+		{
 			buffer[0] = '1';
+			count = 1;
+		}
 		buffer[1] = '|';
 		buffer[2] = 0;
+		buffer[3] = 0;
 	}
 	bool operator++()
 	{
 		if (count + 1 < MAX_PAGE)
 		{
 			count++;
-			buffer[0] = (char)count;
+			buffer[0] = (char)count + '0';
 			return true;
 		}
 		return false;
@@ -33,17 +41,21 @@ public:
 		if (count -1 > 0)
 		{
 			count--;
-			buffer[0] = (char)count;
+			buffer[0] = (char)count + '0';
 			return true;
 		}
 		return false;
 	}
-	inline bool is_enable(const char* buffer)
+	static inline bool is_enable(const char* buffer)
 	{
-		int count = (int)buffer[0];
-		if(buffer[0]>0 && buffer[0] <= MAX_PAGE )
+		int count = (int)buffer[0] - '0';
+		if(count>0 && count <= MAX_PAGE )
 			return buffer[1] == '|';
 		return false;
+	}
+	static inline bool size()
+	{
+		return sizeof(char) * 2;
 	}
 	bool extract(const char* buffer)
 	{
@@ -94,7 +106,7 @@ public:
 		this->current_addr = current;
 		this->right_addr = right;
 	}
-	inline bool is_deleted(const char* buffer)
+	static inline bool is_deleted(const char* buffer)
 	{
 		return buffer[0] == '0' && buffer[1] == '|';
 	}
