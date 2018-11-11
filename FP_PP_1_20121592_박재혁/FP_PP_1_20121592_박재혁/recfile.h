@@ -10,21 +10,15 @@
 
 template <class RecType>
 class RecordFile: public BufferFile
-{
-public:
+{public:
 	int Read (RecType & record, int recaddr = -1);
 	int Write (const RecType & record, int recaddr = -1);
 	int Append (const RecType & record, int recaddr = -1);
+
+	/* for project 1 */
+	// return the record address corresponding to key 
+	int Find(const RecType & record);
 	
-	
-	int Find(const RecType& record);
-	int Find(int idx, RecType& found);
-
-	int Write_Unique(const RecType & record, int recaddr = -1);
-
-	int Delete(int read_addr = -1);
-	int Delete(const RecType& record);
-
 	RecordFile (IOBuffer & buffer): BufferFile (buffer) {}
 };
 
@@ -61,97 +55,26 @@ int RecordFile<RecType>::Append (const RecType & record, int recaddr = -1)
 template <class RecType>
 int RecordFile<RecType>::Find(const RecType & record)
 {
-	int save1 = File.tellg();
-	int save2 = File.tellp();
+	int result;
+	result = record.Pack(Buffer);
+	if (!result) return -1;
+	const char* key = record.getKey();
 
-	Rewind();
-	int src_addr = 0;
-	RecType ptr;
-	for (src_addr = Read(ptr); src_addr != -1; src_addr = Read(ptr))
-	{
-		if (ptr == record)
-			break;
-	}
-
-	File.seekg(save1);
-	File.seekp(save2);
-	return src_addr;
-}
-
-template <class RecType>
-int RecordFile<RecType>::Find(int idx, RecType& found)
-{
-	int save1 = File.tellg();
-	int save2 = File.tellp();
-
-	int src_addr, count = 0;
-	RecType ptr;
-	for (src_addr = Read(ptr); src_addr != -1; src_addr = Read(ptr), count++)
-	{
-		if (count == idx)
-			break;
-	}
-	
-	File.seekg(save1);
-	File.seekp(save2);
-	
-	if (src_addr == -1)
-		return -1;
-	found = ptr;
-	return src_addr;
-}
-
-template <class RecType>
-int RecordFile<RecType>::Write_Unique(const RecType & record, int recaddr = -1)
-{
-	int exist = Find(record);
-	if (exist == -1)
-		return Write(record);
-	else
-		return -2;
-}
-
-template <class RecType>
-int RecordFile<RecType>::Delete(int read_addr = -1)
-{
-	if (read_addr == -1)
-		return -1;
-	
+	//1. Start the beginning of file
 	BufferFile::Rewind();
-	RecType ptr;
-	int src_addr;
 
-	fstream tempfile;
-	tempfile.open("temp_file.dat", ios::out | ios::trunc | ios::binary);
-	if (!tempfile.good())
+	RecType target =  RecType();
+	//2. Read sequentially and compare with record
+	for (result = this->Read(target); result != EOF; result = this->Read(target))
 	{
-		File.close();
-		return -1;
-	}
-	HeaderSize = Buffer.WriteHeader(tempfile);
-	if (HeaderSize == 0) return -1;
-
-	for (src_addr = Read(ptr); src_addr != -1; src_addr = Read(ptr))
-	{
-		if (src_addr == read_addr) continue;
-		if (!(ptr.Pack(Buffer)))
+		// if it cannot read, break
+		if (result == -1)
 			break;
-		if (Buffer.Write(tempfile) == -1)
+		// if you find, break
+		if (target.getKey() == key)
 			break;
 	}
-	tempfile.close();
-	this->Close();
-
-	remove(this->filename.c_str());
-	rename("temp_file.dat", this->filename.c_str());
-
-	if (!this->Open((char *)(this->filename.c_str()), this->mode))
-		return -1;
-	return 0;
+	return result;
 }
-template <class RecType>
-int RecordFile<RecType>::Delete(const RecType& record)
-{
-	return Delete(this->Find(record));
-}
+
 #endif

@@ -79,6 +79,9 @@ public:
 
 	bool Pack(IOBuffer& Buffer) const;
 	bool Unpack(IOBuffer &);
+
+	// For project 1, return the primary key of scheme
+	const char* getKey() const { return this->LectureID; }
 };
 
 istream &operator >> (istream& is, Lecture &s);

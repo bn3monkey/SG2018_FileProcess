@@ -64,4 +64,7 @@ public:
 
 	virtual bool Pack(IOBuffer& Buffer) const = 0;
 	virtual bool Unpack(IOBuffer &) = 0;
+
+	// For project 1, return the primary key of scheme
+	virtual const char* getKey() const = 0;
 };

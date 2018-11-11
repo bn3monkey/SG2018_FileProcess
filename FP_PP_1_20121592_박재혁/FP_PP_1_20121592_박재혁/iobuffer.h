@@ -3,7 +3,6 @@
 #define IOBUFFER_H
 #include <stdlib.h>
 #include <iostream>
-#include "recordform.hpp"
 
 #ifndef FALSE
 #define FALSE (0)
@@ -32,11 +31,11 @@ class IOBuffer
 	// the read and write operations return the address of the record
 	// sequential read and write operations
 	virtual int Read (istream &) = 0; // read a buffer from the stream
-	virtual int Write (iostream &) = 0; // write a buffer to the stream
+	virtual int Write (ostream &) const = 0; // write a buffer to the stream
 
 	// these are the direct access read and write operations
 	virtual int DRead (istream &, int recref); // read specified record
-	virtual int DWrite(iostream &, int recref); // write specified record
+	virtual int DWrite (ostream &, int recref) const; // write specified record
 
 	// these header operations return the number of bytes in the header
 	virtual int ReadHeader (istream &); // write a buffer to the stream

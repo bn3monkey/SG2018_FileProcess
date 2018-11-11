@@ -15,6 +15,7 @@ int Purchase::compare(const Purchase* s)
 
 Purchase::Purchase()
 {
+	update_memberid("");
 	update_mileage("");
 }
 Purchase::Purchase(const Scheme& s)
@@ -119,3 +120,4 @@ bool Purchase::Unpack(IOBuffer &Buffer)
 
 	return true;
 }
+

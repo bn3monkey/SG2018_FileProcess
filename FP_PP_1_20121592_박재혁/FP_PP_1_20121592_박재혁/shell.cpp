@@ -1,5 +1,5 @@
 #include "shell.hpp"
-
+#include <string>
 using namespace std;
 
 //RecordFile <Member> mfile;
@@ -44,43 +44,6 @@ int PurchaseTest()
 	cout << "--Purchase Test--" << endl;
 	return SchemeTest<Purchase>("listOfPurchase.txt", "listOfPurchase.dat");
 }
-int LecturPurchaseSystem()
-{
-
-	
-	RecordFile <Member> MemberFile(DelimFieldBuffer('|', STDMAXBUF));
-	MemberFile.Open("listOfMember.dat", ios::out);
-
-	for (int read_addr = 0, idx = 0; read_addr != -1;idx++)
-	{
-		Member m;
-		read_addr = MemberFile.Find(idx, m);
-		if(read_addr != -1)
-		cout << m;
-	}
-	MemberFile.Close();
-
-	MemberFile.Open("listOfMember.dat", ios::out);
-	Member m2;
-	MemberFile.Find(2, m2);
-	cout << "---\n" << m2 << "---\n";
-	MemberFile.Close();
-
-	MemberFile.Open("listOfMember.dat", ios::in | ios::out);
-	MemberFile.Delete(m2);
-	MemberFile.Close();
-
-	MemberFile.Open("listOfMember.dat", ios::out);
-	for (int read_addr = 0, idx = 0; read_addr != -1; idx++)
-	{
-		Member m;
-		read_addr = MemberFile.Find(idx, m);
-		if (read_addr != -1)
-			cout << m;
-	}
-	MemberFile.Close();
-	return 0;
-}
 
 int (*prog_table[prog_len])() = 
 {
@@ -91,5 +54,4 @@ int (*prog_table[prog_len])() =
 	MemberTest,
 	LectureTest,
 	PurchaseTest,
-	LecturPurchaseSystem,
 };

@@ -53,7 +53,7 @@ public:
 			return buffer[1] == '|';
 		return false;
 	}
-	static inline bool size()
+	static inline int size()
 	{
 		return sizeof(char) * 2;
 	}
@@ -62,7 +62,7 @@ public:
 		if (is_enable(buffer))
 		{
 			memcpy(this->buffer, buffer, 2);
-			this->count = (int)(this->buffer)[0];
+			this->count = (int)((this->buffer)[0] - '0');
 			return true;
 		}
 		return false;
@@ -70,6 +70,10 @@ public:
 	const char* makeRecord()
 	{
 		return buffer;
+	}
+	inline int page_num()
+	{
+		return count;
 	}
 };
 class deleted_record

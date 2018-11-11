@@ -1,12 +1,9 @@
 // delim.h
-#pragma once
-
 #ifndef DELIM_H
 #define DELIM_H
 
 #include <iostream>
 #include "varlen.h"
-
 
 class DelimFieldBuffer: public VariableLengthBuffer
 // a buffer which holds delimited text fields.
@@ -16,10 +13,7 @@ class DelimFieldBuffer: public VariableLengthBuffer
 // To use this class, create a DelimFieldBuffer variable and associate definitions with the fields.
 // operations are provided to allow values to be associated with the fields (Pack)
 //	and to fetch the values of fields (Unpack)
-{  
-
-public:
-	
+{  public:
 	DelimFieldBuffer (char Delim = -1, int maxBytes = 1000); // construct with a maximum of maxBytes
 		// construct with fields with delimeters
 	DelimFieldBuffer (const DelimFieldBuffer & buffer); // copy constructor
@@ -32,13 +26,9 @@ public:
 	void Print (ostream &) const;
  	int Init (char delim = 0);
 	static void SetDefaultDelim (char delim);
-
-
  protected:
 	char Delim;
 	static char DefaultDelim;
-	deleted_record head;
-
 };
 
 

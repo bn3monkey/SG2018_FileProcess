@@ -5,14 +5,14 @@
 
 class Member : public Scheme
 {
-private :
+private:
 	std::string ID;
 	std::string Password;
 	std::string Name;
 	std::string PhoneNumber;
 	std::string Address;
-	char Mileage[MILEAGE_LEN +1];
-	
+	char Mileage[MILEAGE_LEN + 1];
+
 	void copy(const Member* s);
 	int compare(const Member *s);
 
@@ -51,6 +51,9 @@ public:
 
 	bool Pack(IOBuffer& Buffer) const;
 	bool Unpack(IOBuffer &);
+
+	// For project 1, return the primary key of scheme
+	const char* getKey() const { return this->ID.c_str(); }
 };
 
 istream &operator >> (istream& is, Member &s);

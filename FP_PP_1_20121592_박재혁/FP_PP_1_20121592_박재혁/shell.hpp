@@ -51,8 +51,7 @@ int SchemeTest(const char* txtname, char* datname)
 		T data;
 		ifs >> data;
 
-		int recaddr = file.Write_Unique(data);
-		//int recaddr = file.Write(data);
+		int recaddr = file.Write(data);
 		if (recaddr == -1)
 			cout << "Write Error!" << endl;
 		else if(recaddr == -2)
@@ -72,8 +71,8 @@ int SchemeTest(const char* txtname, char* datname)
 		file.Read(s);
 		cout << s;
 	}
-	file.Close();
-	return 0;
+
+
 }
 
 int End();
@@ -83,7 +82,6 @@ int showPurchase();
 int MemberTest();
 int LectureTest();
 int PurchaseTest();
-int LecturPurchaseSystem();
 
 enum prog_name
 {
@@ -94,7 +92,6 @@ enum prog_name
 	prog_membertest,
 	prog_lecturetest,
 	prog_purchasetest,
-	prog_lecturepurchasesystem,
 	prog_len,
 };
 
