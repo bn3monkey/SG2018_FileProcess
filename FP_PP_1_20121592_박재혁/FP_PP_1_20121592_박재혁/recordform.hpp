@@ -1,163 +1,180 @@
 #pragma once
 #include <string>
-#define RECORD_PAGE 128
-#define MAX_PAGE 8
+#include <iostream>
 
-class enable_record
+// 삭제된 레코드의 관리에 관한 클래스 모음
+#define RECORD_PAGE 16
+
+// 레코드를 읽었을 때, 삭제/비삭제 혹은 오류를 나타내는 enum code
+enum DeletedRecord_ErrCode
 {
-	int count = 0;
-	char buffer[4];
+	dr_error = -1,
+	dr_nondeleted = 0,
+	dr_deleted = 1,
+};
+
+// Record의 Head 부분
+class DeletedRecordHead
+{
+	int delim; // Head와 구분해주는 구분자
+	bool deleted; //삭제됐는지 안 됐는지 여부
+	int page_num; //현재 레코드가 보유하고 있는 page number
+
+	const static int head_size = 7; //head 크기
+	char buffer[head_size] = {}; //buffer
 
 public:
-	enable_record(int idx = 1)
+	DeletedRecordHead(char delim ='|', bool deleted = false, int page_num = 1)
 	{
-		
-		if (idx > 0 && idx <= MAX_PAGE)
-		{
-			buffer[0] = (char)idx + '0';
-			count = idx;
-		}
-		else
-		{
-			buffer[0] = '1';
-			count = 1;
-		}
-		buffer[1] = '|';
-		buffer[2] = 0;
-		buffer[3] = 0;
+		this->deleted = deleted;
+		this->delim = delim;
+		this->page_num = page_num;
+		makeHead();
 	}
-	bool operator++()
+	DeletedRecordHead(const DeletedRecordHead& d)
 	{
-		if (count + 1 < MAX_PAGE)
-		{
-			count++;
-			buffer[0] = (char)count + '0';
-			return true;
-		}
-		return false;
+		this->delim = d.delim;
+		this->page_num = d.page_num;
+		memcpy(this->buffer, d.buffer, head_size);
 	}
-	bool operator--()
+	//Buffer에 Data의 size를 통해 header byte를 포함하여 필요한 Page의 개수를 계산한다. 
+	static int calPageNum(int buffer_size)
 	{
-		if (count -1 > 0)
-		{
-			count--;
-			buffer[0] = (char)count + '0';
-			return true;
-		}
-		return false;
+		int whole_size = buffer_size + head_size;
+		int remainder = whole_size % RECORD_PAGE;
+		return whole_size / RECORD_PAGE + (remainder ? 1 : 0);
 	}
-	static inline bool is_enable(const char* buffer)
-	{
-		int count = (int)buffer[0] - '0';
-		if(count>0 && count <= MAX_PAGE )
-			return buffer[1] == '|';
-		return false;
-	}
-	static inline int size()
-	{
-		return sizeof(char) * 2;
-	}
-	bool extract(const char* buffer)
-	{
-		if (is_enable(buffer))
-		{
-			memcpy(this->buffer, buffer, 2);
-			this->count = (int)((this->buffer)[0] - '0');
-			return true;
-		}
-		return false;
-	}
-	const char* makeRecord()
-	{
-		return buffer;
-	}
-	inline int page_num()
-	{
-		return count;
-	}
-};
-class deleted_record
-{
-	char buffer[RECORD_PAGE];
 
-	//왼쪽에 있는 삭제 addr (자신이 head_entry면 0)
-	int left_addr;
-	// entry 구조체의 시작 주소
-	int current_addr;
-	//오른쪽에 있는 삭제 addr (자신이 가장 마지막에 있는 entry면 right_addr가 가르키는 주소와 현재 파일의 끝을 비교해야함)
-	int right_addr;
+	//Record의 삭제, 미삭제 여부
+	bool getDeleted() const ;
+
+	//구분자 get/set
+	void setDelim(char delim);
+	const char getDelim() const;
+
+	//head buffer의 get과 head buffer의 size
+	const char* getHead() const;
+	const int getHeadSize() const;
+
+	//record의 쓰이고 있는 page의 개수 get/set
+	void setPageNum(int page_num);
+	const int getPageNum() const;
+	// record 전체에서 사용하고 있는 byte 개수
+	const int getPageSize() const;
+	// record에서 header 부분을 뺀 나머지 부분의 byte
+	const int getDataSize() const;
+
+	//구조체 -> buffer로 전환
+	void makeHead();
+	//buffer -> 구조체로 전환
+	DeletedRecord_ErrCode extractHead(const char* buffer);
+};
+
+//Deleted Record의 전체 부분
+class DeletedRecord
+{
+protected:
+	DeletedRecordHead head;
+	char buffer[RECORD_PAGE+1];
+	int prevaddr; //가리키고 있는 현재 record의 위치
+	int nextaddr; //가리키고 있는 다음 record의 위치
+
+	//구조체 -> buffer로 전환
+	void makeRecord();
+	//buffer -> 구조체로 전환
+	DeletedRecord_ErrCode extractRecord(const char* buffer);
 
 public:
-	deleted_record(int left = 0, int current = 0, int right = 0) : left_addr(left), current_addr(current), right_addr(right) {}
-
-	deleted_record(const deleted_record& d)
+	DeletedRecord(char _delim, int _prevaddr = -1, int _nextaddr = -1, int _num = 1) : prevaddr(_prevaddr), nextaddr(_nextaddr)
 	{
-		this->left_addr = d.left_addr;
-		this->current_addr = d.current_addr;
-		this->right_addr = d.right_addr;
+		this->head = DeletedRecordHead(_delim, true, _num);
+		makeRecord();
 	}
 
-	deleted_record& operator=(const deleted_record& d)
+	DeletedRecord(const DeletedRecord& d)
 	{
-		this->left_addr = d.left_addr;
-		this->current_addr = d.current_addr;
-		this->right_addr = d.right_addr;
+		this->prevaddr = d.prevaddr;
+		this->nextaddr = d.nextaddr;
+		this->head = d.head;
+		makeRecord();
 	}
 
-	void set(int left, int current, int right)
+	DeletedRecord& operator=(const DeletedRecord& d)
 	{
-		this->left_addr = left;
-		this->current_addr = current;
-		this->right_addr = right;
-	}
-	static inline bool is_deleted(const char* buffer)
-	{
-		return buffer[0] == '0' && buffer[1] == '|';
-	}
-	bool extract(const char* buffer)
-	{
-		if (is_deleted(buffer))
-		{
-			int step = 2;
-			memcpy((void *)(&left_addr), (char *)(buffer + step), sizeof(int));
-			step += sizeof(int);
-			memcpy((void *)(&current_addr), (char *)(buffer + step), sizeof(int));
-			step += sizeof(int);
-			memcpy((void *)(&right_addr), (char *)(buffer + step), sizeof(int));
-			step += sizeof(int);
-			return true;
-		}
-		return false;
+		this->prevaddr = d.prevaddr;
+		this->nextaddr = d.nextaddr;
+		this->head = d.head;
+		makeRecord();
+		return *this;
 	}
 
-	inline bool is_headentry()
-	{
-		return this->left_addr == 0;
-	}
-	inline bool is_lastentry(int ios_end)
-	{
-		return !(right_addr < ios_end);
-	}
+	// 구조체를 Setting
+	DeletedRecord_ErrCode set(int _prevaddr, int _nextaddr, int _num);
+	// buffer -> 구조체로 전환
+	DeletedRecord_ErrCode set(const char* buffer);
+	// DeletedRecord를 buffer의 형태로 return한다.
+	const char* get() const;
+	// DeletedRecord의 buffer 크기를 return한다.
+	const int getBufferSize() const;
 
-	const char* makeRecord()
-	{
-		memset(buffer, 0, RECORD_PAGE);
+	// private member data에 대한 개별적인 get/set함수.
+	const int getPrevaddr() const;
+	void setPrevaddr(int addr);
+	const int getNextaddr() const;
+	void setNextaddr(int addr);
 
-		buffer[0] = '0';
-		buffer[1] = '|';
-
-		int step = 2;
-		memcpy(buffer + step, (char *)(&left_addr), sizeof(int));
-		step += sizeof(int);
-		memcpy(buffer + step, (char *)(&current_addr), sizeof(int));
-		step += sizeof(int);
-		memcpy(buffer + step, (char *)(&right_addr), sizeof(int));
-		step += sizeof(int);
-
-		return buffer;
-	}
-	static inline size_t header_size()
-	{
-		return sizeof('0') + sizeof('|') + 3 * sizeof(int);
-	}
+	// DeltedRecordHeader에 있는 member data에 대한 개별적인 get/set 함수.
+	void setDelim(char delim);
+	const char getDelim() const;
+	const char* getHead() const;
+	const int getHeadSize() const;
+	const int getPageNum() const;
+	const int getPageSize() const;
+	void setPageNum(int num);
+	const int getDataSize() const;
+	
+	// stream -> 구조체/buffer로 변환
+	DeletedRecord_ErrCode read(std::istream& stream);
+	// 구조체/buffer -> stream으로 변환
+	const int write(std::ostream& stream) const;
 };
+
+//Deleted Record의 linked list에 해당하는 구조체다.
+class DeletedRecordList : public DeletedRecord
+{
+	//Record File 내부에서 존재하는 Deleted Record의 head의 주소
+	int header_addr;
+public:
+	DeletedRecordList(char delim = '|') : DeletedRecord(delim)
+	{
+		makeRecord();
+	}
+	const int get_headaddr() const
+	{
+		return header_addr;
+	}
+	void set_headaddr(int addr)
+	{
+		header_addr = addr;
+	}
+	int ReadHeader(std::istream& stream)
+	{
+		header_addr = stream.tellg();
+		stream.read(buffer, RECORD_PAGE-1);
+		if (!stream.good()) return false;
+		this->extractRecord(buffer);
+		return true;
+	}
+	int WriteHeader(std::ostream& stream) const
+	{
+		stream.write(this->buffer, RECORD_PAGE);
+		if (!stream.good()) return false;
+		return true;
+	}
+	
+	int pop(std::iostream& stream, const DeletedRecord& temp);
+	int push(std::iostream& stream, DeletedRecord& temp, int addr);
+};
+
+
+

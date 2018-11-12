@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "varlen.h"
+#include "recordform.hpp"
 
 class DelimFieldBuffer: public VariableLengthBuffer
 // a buffer which holds delimited text fields.
@@ -21,14 +22,26 @@ class DelimFieldBuffer: public VariableLengthBuffer
 	void Clear (); // clear fields from buffer
 	int Pack (const void*, int size = -1); // set the value of the next field of the buffer;
 	int Unpack (void * field, int maxBytes = -1); // extract the value of the next field of the buffer
+	
+	// For project 1.
+	int Read(istream &);
+	int Write(ostream &) const;
+	int Remove(iostream &);
+	
 	int ReadHeader (istream & stream);
 	int WriteHeader (ostream & stream) const;
+	
 	void Print (ostream &) const;
  	int Init (char delim = 0);
 	static void SetDefaultDelim (char delim);
+
+	DeletedRecordList* getList() { return &dList; }
+
  protected:
 	char Delim;
 	static char DefaultDelim;
+	DeletedRecordList dList;
+	
 };
 
 

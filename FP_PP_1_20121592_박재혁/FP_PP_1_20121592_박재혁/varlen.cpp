@@ -50,7 +50,11 @@ int VariableLengthBuffer :: Write (ostream & stream) const
 	if (! stream . good ()) return -1;
 	return recaddr;
 }
-
+int VariableLengthBuffer::Remove(iostream & stream)
+{
+	int recaddr = (int)stream.tellp();
+	return recaddr;
+}
 
 const char * headerStr = "Variable";
 //const int headerSize = strlen (headerStr);

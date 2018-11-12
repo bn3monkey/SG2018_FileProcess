@@ -85,6 +85,13 @@ int BufferFile::Append ()
 	return Buffer . Write (File);
 }
 
+int BufferFile::Remove(int recaddr)
+{
+	if (recaddr == -1)
+		return Buffer.Remove(File);
+	else
+		return Buffer.DRemove(File, recaddr);
+}
 // Access to IOBuffer
 IOBuffer & BufferFile::GetBuffer ()
 { return Buffer;}

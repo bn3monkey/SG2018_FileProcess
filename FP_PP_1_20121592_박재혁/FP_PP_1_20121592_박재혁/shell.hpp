@@ -65,13 +65,32 @@ int SchemeTest(const char* txtname, char* datname)
 	file.Close();
 
 	file.Open(datname, ios::in);
+	std::vector<T> list;
 	for (int i = 0; i < len && i < 10; i++)
 	{
 		T s;
 		file.Read(s);
 		cout << s;
+		list.push_back(s);
+	}
+	file.Close();
+
+	file.Open(datname, ios::in | ios::out);
+	while (!list.empty())
+	{
+		T s = list.back();
+		list.pop_back();
+		file.Remove(s);
+
+		for (int i = 0; i < len && i < 10; i++)
+		{
+			T s;
+			file.Read(s);
+			cout << s;
+		}
 	}
 
+	file.Close();
 
 }
 

@@ -23,6 +23,7 @@ IOBuffer & IOBuffer :: operator = (const IOBuffer & buffer)
 void IOBuffer::Clear ()
 // clear field values from buffer
 {
+	memset(Buffer, 0, MaxBytes);
 	NextByte = 0;
 	Packing = TRUE;
 }
@@ -56,6 +57,14 @@ int IOBuffer::DWrite (ostream & stream, int recref) const
 	stream . seekp (recref, ios::beg);
 	if ((int)stream . tellp () != recref) return -1;
 	return Write (stream);
+}
+int IOBuffer::DRemove(iostream & stream, int recref)
+// write specified record
+{
+	stream.seekg(recref, ios::beg);
+	stream.seekp(recref, ios::beg);
+	if ((int)stream.tellp() != recref) return -1;
+	return Remove(stream);
 }
 
 static const char * headerStr = "IOBuffer";

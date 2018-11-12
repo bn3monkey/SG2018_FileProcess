@@ -18,6 +18,7 @@ class RecordFile: public BufferFile
 	/* for project 1 */
 	// return the record address corresponding to key 
 	int Find(const RecType & record);
+	int Remove(const RecType& record, int recaddr = -1);
 	
 	RecordFile (IOBuffer & buffer): BufferFile (buffer) {}
 };
@@ -41,6 +42,16 @@ int RecordFile<RecType>::Write (const RecType & record, int recaddr = -1)
 	result = record . Pack (Buffer);
 	if (!result) return -1;
 	return BufferFile::Write (recaddr);
+}
+
+template <class RecType>
+int RecordFile<RecType>::Remove(const RecType& record, int recaddr = -1)
+{
+	int removeAddr = Find(record);
+	if (removeAddr == -1) return -1;
+	int result = BufferFile::Remove(removeAddr);
+	BufferFile::Rewind();
+	return result;
 }
 
 template <class RecType>
@@ -71,9 +82,12 @@ int RecordFile<RecType>::Find(const RecType & record)
 		if (result == -1)
 			break;
 		// if you find, break
-		if (target.getKey() == key)
+		if (strcmp(target.getKey(),key) == 0)
 			break;
 	}
+
+	//3. Rewind the file
+	BufferFile::Rewind();
 	return result;
 }
 

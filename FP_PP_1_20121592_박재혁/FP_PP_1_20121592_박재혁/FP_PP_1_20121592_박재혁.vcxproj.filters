@@ -60,6 +60,9 @@
     <ClInclude Include="recordform.hpp">
       <Filter>소스 파일\BufferClass</Filter>
     </ClInclude>
+    <ClInclude Include="RecordManagement.hpp">
+      <Filter>소스 파일\ShellClass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffile.cpp">
@@ -88,6 +91,9 @@
     </ClCompile>
     <ClCompile Include="Purchase.cpp">
       <Filter>소스 파일\BasicClass</Filter>
+    </ClCompile>
+    <ClCompile Include="recordform.cpp">
+      <Filter>소스 파일\BufferClass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

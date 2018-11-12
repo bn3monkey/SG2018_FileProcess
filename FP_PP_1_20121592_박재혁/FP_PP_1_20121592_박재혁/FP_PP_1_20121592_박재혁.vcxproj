@@ -119,6 +119,7 @@
     <ClInclude Include="Member.hpp" />
     <ClInclude Include="Purchase.hpp" />
     <ClInclude Include="recfile.h" />
+    <ClInclude Include="RecordManagement.hpp" />
     <ClInclude Include="Scheme.hpp" />
     <ClInclude Include="SchemeList.hpp" />
     <ClInclude Include="shell.hpp" />
@@ -132,6 +133,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Member.cpp" />
     <ClCompile Include="Purchase.cpp" />
+    <ClCompile Include="recordform.cpp" />
     <ClCompile Include="shell.cpp" />
     <ClCompile Include="varlen.cpp" />
   </ItemGroup>
