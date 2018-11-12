@@ -99,7 +99,7 @@ int DelimFieldBuffer::Write(ostream &stream) const
 	//3. data를 record에 쓴다.
 	stream.write(Buffer, ndrhead.getDataSize());
 	if (!stream.good()) return -1;
-
+	
 	return recaddr;
 }
 int DelimFieldBuffer::Remove(iostream &stream)
@@ -110,19 +110,22 @@ int DelimFieldBuffer::Remove(iostream &stream)
 	//1.현재 위치의 record를 읽어서 아직 삭제되지 않은 레코드인지 확인한다.
 	int readaddr = (int)stream.tellg();
 	DeletedRecord temp(this->Delim);
-	DeletedRecord_ErrCode result = temp.read(stream);
-	if (result != dr_nondeleted)
+	if (temp.read(stream) != dr_nondeleted)
 		return -1;
 	
 	//2. 현재의 바로 옆 record가 deleted_record인지 확인
 	DeletedRecord next(this->Delim);
-	int nextaddr = (int)stream.tellg();
-	for (result = next.read(stream); result == dr_deleted; result = next.read(stream))
+	int nextaddr = readaddr + temp.getPageSize();
+	stream.seekg(nextaddr);
+	while(next.read(stream) == dr_deleted)
 	{
 		// 2 - 1. 맞으면 linked_list에서 pop하고 현재 deleted_record에 병합
-		dList.pop(stream, next);
+		if (dList.pop(stream, next) == -1)
+			return -1;
+		
 		int page_num = temp.getPageNum() + next.getPageNum();
 		temp.setPageNum(page_num);
+
 		nextaddr = (int)stream.tellg();
 	}
 	
@@ -131,7 +134,60 @@ int DelimFieldBuffer::Remove(iostream &stream)
 
 	return readaddr;
 }
+int DelimFieldBuffer::Insert(iostream &stream)
+{
+	//1. 쓰려고 하는 레코드의 page number를 구한다,
+	int pageNum = DeletedRecordHead::calPageNum(BufferSize);
+	DeletedRecord temp(this->Delim);
+	
+	int removeAddr;
+	//2. 삭제된 레코드 리스트에서 다음 레코드로 넘어간다.
+	for (removeAddr = dList.getNextaddr(); removeAddr != -1; removeAddr = temp.getNextaddr())
+	{
+		stream.seekg(removeAddr);
+		if (temp.read(stream) != dr_deleted)
+			return -1;
 
+		//3-1. 아니면 바로 옆 페이지에 삭제된 레코드가 있는지 확인한다.
+		DeletedRecord next(this->Delim);
+		int nextaddr = (int)stream.tellg();
+		while (next.read(stream) == dr_deleted)
+		{
+			//3-1. 있으면 그 레코드를 현재 삭제된 레코드 페이지에 병합하고 반복한다.
+			if (dList.pop(stream, next) == -1)
+				return -1;
+			
+			int page_num = temp.getPageNum() + next.getPageNum();
+			temp.setPageNum(page_num);
+			
+			nextaddr = (int)stream.tellg();
+		}
+
+		//3 - 2. 삭제된 레코드 페이지 크기 >= 쓰려고 하는 레코드 크기이면
+		if (pageNum <= temp.getPageNum())
+		{
+			// 삭제된 레코드 페이지에 쓰려고 하는 레코드를 추가한다.
+			stream.seekp(removeAddr);
+			if (this->Write(stream) == -1)
+				return -1;
+			// 남은 레코드 덩어리를 모아 삭제된 레코드 리스트에 추가한다.
+			int rest_pageNum = temp.getPageNum() - pageNum;
+			if (rest_pageNum > 0)
+			{
+				temp.setPageNum(rest_pageNum);
+				stream.seekp(removeAddr + RECORD_PAGE*pageNum);
+				if (temp.write(stream) == -1)
+					return -1;
+			}
+		}
+	}
+	//4. 삭제된 레코드 리스트에서 공간이 없으면, 레코드 맨 뒤에 쓴다.
+	stream.seekp(0, ios::end);
+	if (this->Write(stream) == -1)
+		return -1;
+
+	return removeAddr;
+}
 int DelimFieldBuffer :: ReadHeader (istream & stream)
 // read header: contains delimeter character
 {

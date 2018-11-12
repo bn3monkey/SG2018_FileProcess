@@ -34,6 +34,7 @@ class IOBuffer
 	virtual int Write (ostream &) const = 0; // write a buffer to the stream
 	 //for project 1
 	virtual int Remove(iostream &) = 0; // make a block of stream not readable
+	virtual int Insert(iostream &) = 0;
 
 	// these are the direct access read and write operations
 	virtual int DRead (istream &, int recref); // read specified record

@@ -27,6 +27,7 @@ class DelimFieldBuffer: public VariableLengthBuffer
 	int Read(istream &);
 	int Write(ostream &) const;
 	int Remove(iostream &);
+	int Insert(iostream &);
 	
 	int ReadHeader (istream & stream);
 	int WriteHeader (ostream & stream) const;

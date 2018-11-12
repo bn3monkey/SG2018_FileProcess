@@ -192,7 +192,7 @@ DeletedRecord_ErrCode DeletedRecord::read(std::istream& stream)
 	DeletedRecord_ErrCode result =  this->set(buffer);
 	
 	// Deleted Record가 맞으면 다음 Record로 넘어간다.
-	if(result == 1)
+	if(result == dr_deleted)
 		stream.seekg(readaddr + this->getPageSize());
 
 	return result;
@@ -217,6 +217,8 @@ const int DeletedRecord::write(std::ostream& stream) const
 
 int DeletedRecordList::pop(std::iostream& stream, const DeletedRecord& temp)
 {
+	int now_addr = (int)stream.tellg();
+
 	int prev_addr = temp.getPrevaddr();
 	int next_addr = temp.getNextaddr();
 
@@ -225,27 +227,43 @@ int DeletedRecordList::pop(std::iostream& stream, const DeletedRecord& temp)
 	if (prev.read(stream) != dr_deleted)
 		return -1;
 
-	stream.seekg(next_addr);
-	DeletedRecord next(temp.getDelim());
-	if (next.read(stream) != dr_deleted)
-		return -1;
-
 	prev.setNextaddr(next_addr);
-	next.setPrevaddr(prev_addr);
 
 	stream.seekp(prev_addr);
 	if (prev.write(stream) == -1)
 		return -1;
-	stream.seekp(next_addr);
-	if (next.write(stream) == -1)
-		return -1;
 
+	DeletedRecord next(temp.getDelim());
+	if (next_addr != -1)
+	{
+		stream.seekg(next_addr);
+		if (next.read(stream) != dr_deleted)
+			return -1;
+
+		next.setPrevaddr(prev_addr);
+		
+		stream.seekp(next_addr);
+		if (next.write(stream) == -1)
+			return -1;
+	}
+
+	stream.seekg(now_addr);
 	return 1;
 }
 int DeletedRecordList::push(std::iostream& stream, DeletedRecord& temp, int addr)
 {
+	
+	stream.seekg(this->get_headaddr());
+	if (this->read(stream) != dr_deleted)
+		return -1;
+	
 	int prev_addr = this->get_headaddr();
 	int next_addr = this->getNextaddr();
+	
+	this->setNextaddr(addr);
+	stream.seekp(prev_addr);
+	if (this->write(stream) == -1)
+		return -1;
 
 	if (next_addr != -1)
 	{
@@ -259,11 +277,11 @@ int DeletedRecordList::push(std::iostream& stream, DeletedRecord& temp, int addr
 		if (next.write(stream) == -1)
 			return -1;
 	}
-	this->setNextaddr(addr);
-	
+		
 	temp.setPrevaddr(prev_addr);
 	temp.setNextaddr(next_addr);
 
+	stream.seekg(addr);
 	stream.seekp(addr);
 	if (temp.write(stream) == -1)
 		return -1;

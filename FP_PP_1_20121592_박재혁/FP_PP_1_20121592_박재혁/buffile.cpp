@@ -92,6 +92,12 @@ int BufferFile::Remove(int recaddr)
 	else
 		return Buffer.DRemove(File, recaddr);
 }
+
+int BufferFile::Insert()
+{
+	return Buffer.Insert(File);
+}
+
 // Access to IOBuffer
 IOBuffer & BufferFile::GetBuffer ()
 { return Buffer;}

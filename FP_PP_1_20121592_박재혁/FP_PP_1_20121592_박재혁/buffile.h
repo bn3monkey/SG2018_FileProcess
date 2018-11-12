@@ -44,6 +44,7 @@ class BufferFile
 
 	//For Project 1
 	int Remove(int recaddr = -1);
+	int Insert();
 
 	// Access to IOBuffer
 	IOBuffer & GetBuffer ();

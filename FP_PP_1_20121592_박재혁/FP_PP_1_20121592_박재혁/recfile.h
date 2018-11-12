@@ -19,7 +19,8 @@ class RecordFile: public BufferFile
 	// return the record address corresponding to key 
 	int Find(const RecType & record);
 	int Remove(const RecType& record, int recaddr = -1);
-	
+	int Insert(const RecType& record);
+
 	RecordFile (IOBuffer & buffer): BufferFile (buffer) {}
 };
 
@@ -29,9 +30,11 @@ int RecordFile<RecType>::Read (RecType & record, int recaddr = -1)
 {
 	int readAddr, result;
 	readAddr = BufferFile::Read (recaddr);
-	if (readAddr==-1) return -1;
+	if (readAddr==-1) 
+		return -1;
 	result = record . Unpack (Buffer);
-	if (!result) return -1;
+	if (!result) 
+		return -1;
 	return readAddr;
 }
 
@@ -64,6 +67,15 @@ int RecordFile<RecType>::Append (const RecType & record, int recaddr = -1)
 }
 
 template <class RecType>
+int RecordFile<RecType>::Insert(const RecType & record)
+{
+	int result;
+	result = record.Pack(Buffer);
+	if (!result) return -1;
+	return BufferFile::Insert();
+}
+
+template <class RecType>
 int RecordFile<RecType>::Find(const RecType & record)
 {
 	int result;
@@ -78,9 +90,6 @@ int RecordFile<RecType>::Find(const RecType & record)
 	//2. Read sequentially and compare with record
 	for (result = this->Read(target); result != EOF; result = this->Read(target))
 	{
-		// if it cannot read, break
-		if (result == -1)
-			break;
 		// if you find, break
 		if (strcmp(target.getKey(),key) == 0)
 			break;

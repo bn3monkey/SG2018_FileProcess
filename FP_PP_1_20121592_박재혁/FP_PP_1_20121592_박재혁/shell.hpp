@@ -65,16 +65,25 @@ int SchemeTest(const char* txtname, char* datname)
 	file.Close();
 
 	file.Open(datname, ios::in);
-	std::vector<T> list;
 	for (int i = 0; i < len && i < 10; i++)
 	{
 		T s;
 		file.Read(s);
 		cout << s;
-		list.push_back(s);
 	}
 	file.Close();
 
+
+	file.Open(datname, ios::in);
+	std::vector<T> list;
+	for (int i = 0; true; i++)
+	{
+		T s;
+		if (file.Read(s) == -1)
+			break;
+		list.push_back(s);
+	}
+	file.Close();
 	file.Open(datname, ios::in | ios::out);
 	while (!list.empty())
 	{
@@ -82,12 +91,15 @@ int SchemeTest(const char* txtname, char* datname)
 		list.pop_back();
 		file.Remove(s);
 
-		for (int i = 0; i < len && i < 10; i++)
+		cout << "-------------------------------" << endl;
+		for (int i = 0; true; i++)
 		{
 			T s;
-			file.Read(s);
+			if (file.Read(s) == -1)
+				break;
 			cout << s;
 		}
+		cout << "-------------------------------" << endl;
 	}
 
 	file.Close();
