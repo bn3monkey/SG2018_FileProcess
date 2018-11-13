@@ -156,17 +156,26 @@ int DelimFieldBuffer::Insert(iostream &stream)
 		//3-1. 아니면 바로 옆 페이지에 삭제된 레코드가 있는지 확인한다.
 		DeletedRecord next(this->Delim);
 		int nextaddr = (int)stream.tellg();
+		int whole_pagenum = temp.getPageNum();
 		while (next.read(stream) == dr_deleted)
 		{
 			//3-1. 있으면 그 레코드를 현재 삭제된 레코드 페이지에 병합하고 반복한다.
 			if (dList.pop(stream, next) == -1)
 				return -1;
+
+			//3-1-2. page number가 지속적으로 바뀐다.
+			whole_pagenum = temp.getPageNum() + next.getPageNum();
 			
-			int page_num = temp.getPageNum() + next.getPageNum();
-			temp.setPageNum(page_num);
-			
+			// 3-1-3. pop 과정 중 temp에 저장된 레코드의 주소가 바뀌었을 수 있으므로
+			//temp의 record를 가져온다.
+
 			nextaddr = (int)stream.tellg();
+			stream.seekg(removeAddr);
+			if (temp.read(stream) != dr_deleted)
+				return -1;
+			stream.seekg(nextaddr);
 		}
+		temp.setPageNum(whole_pagenum);
 
 		//3 - 2. 삭제된 레코드 페이지 크기 >= 쓰려고 하는 레코드 크기이면
 		if (pageNum <= temp.getPageNum())

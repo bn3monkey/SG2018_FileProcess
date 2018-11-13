@@ -2,6 +2,9 @@
 #include "Purchase.hpp"
 #include <vector>
 #include <fstream>
+
+#include <algorithm>
+
 #include "recfile.h"
 
 //#define METHOD_TEST 
@@ -124,6 +127,81 @@ int SchemeTest(const char* txtname, char* datname)
 		file.Close();
 	}
 
+	std::random_shuffle(list2.begin(), list2.end());
+	for (int i = 0; i < list2.size(); i++)
+	{
+		file.Open(datname, ios::in | ios::out);
+		T s = list2[i];
+		file.Remove(s);
+
+		cout << "-------------------------------" << endl;
+		for (int i = 0; true; i++)
+		{
+			T s;
+			if (file.Read(s) == -1)
+				break;
+			cout << s;
+		}
+		cout << "-------------------------------" << endl;
+		file.Close();
+	}
+
+	std::random_shuffle(list2.begin(), list2.end());
+	for (int i = 0; i < list2.size(); i++)
+	{
+		file.Open(datname, ios::in | ios::out);
+		T s = list2[i];
+		file.Insert(s);
+
+		cout << "-------------------------------" << endl;
+		for (int i = 0; true; i++)
+		{
+			T s;
+			if (file.Read(s) == -1)
+				break;
+			cout << s;
+		}
+		cout << "-------------------------------" << endl;
+		file.Close();
+	}
+
+	std::random_shuffle(list2.begin(), list2.end());
+	for (int i = 0; i < list2.size(); i++)
+	{
+		file.Open(datname, ios::in | ios::out);
+		T s = list2[i];
+		file.Remove(s);
+
+		cout << "-------------------------------" << endl;
+		for (int i = 0; true; i++)
+		{
+			T s;
+			if (file.Read(s) == -1)
+				break;
+			cout << s;
+		}
+		cout << "-------------------------------" << endl;
+		file.Close();
+	}
+
+	std::random_shuffle(list2.begin(), list2.end());
+	for (int i = 0; i < list2.size(); i++)
+	{
+		file.Open(datname, ios::in | ios::out);
+		T s = list2[i];
+		file.Insert(s);
+
+		cout << "-------------------------------" << endl;
+		for (int i = 0; true; i++)
+		{
+			T s;
+			if (file.Read(s) == -1)
+				break;
+			cout << s;
+		}
+		cout << "-------------------------------" << endl;
+		file.Close();
+	}
 }
 
 int End();
