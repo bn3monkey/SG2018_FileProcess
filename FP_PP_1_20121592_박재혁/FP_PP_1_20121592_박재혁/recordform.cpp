@@ -1,6 +1,10 @@
 #pragma once
 #include "recordform.hpp"
-
+void DeletedRecordHead::setDeleted(bool offset)
+{
+	this->deleted = offset;
+	makeHead();
+}
 bool DeletedRecordHead::getDeleted() const
 {
 	return this->deleted;
@@ -8,6 +12,7 @@ bool DeletedRecordHead::getDeleted() const
 void DeletedRecordHead::setDelim(char delim = '|')
 {
 	this->delim = delim;
+	makeHead();
 }
 const char DeletedRecordHead::getDelim() const
 {
@@ -25,6 +30,7 @@ const int DeletedRecordHead::getHeadSize() const
 void DeletedRecordHead::setPageNum(int page_num)
 {
 	this->page_num = page_num;
+	makeHead();
 }
 const int DeletedRecordHead::getPageNum() const
 {
@@ -107,8 +113,13 @@ DeletedRecord_ErrCode DeletedRecord::set(const char* buffer)
 	DeletedRecord_ErrCode result = extractRecord(buffer);
 	if (result == dr_deleted)
 	{
-		memcpy(this->buffer, buffer, RECORD_PAGE);
-		return dr_deleted;
+		this->head.makeHead();
+		makeRecord();
+	}
+	else if (result == dr_nondeleted)
+	{
+		this->setDeleted(true);
+		makeRecord();
 	}
 	return result;
 }
@@ -120,6 +131,14 @@ const char* DeletedRecord::get() const
 const int DeletedRecord::getBufferSize() const
 {
 	return this->head.getPageSize();
+}
+void DeletedRecord::setDeleted(bool offset)
+{
+	this->head.setDeleted(offset);
+}
+bool DeletedRecord::getDeleted() const
+{
+	return this->head.getDeleted();
 }
 
 void DeletedRecord::setDelim(char delim = '|')
@@ -191,8 +210,8 @@ DeletedRecord_ErrCode DeletedRecord::read(std::istream& stream)
 	//buffer -> 구조체
 	DeletedRecord_ErrCode result =  this->set(buffer);
 	
-	// Deleted Record가 맞으면 다음 Record로 넘어간다.
-	if(result == dr_deleted)
+	// Record의 형태를 띄고 있으면 다음 Record로 넘어간다.
+	if(result == dr_deleted || result == dr_nondeleted)
 		stream.seekg(readaddr + this->getPageSize());
 
 	return result;
@@ -217,42 +236,48 @@ const int DeletedRecord::write(std::ostream& stream) const
 
 int DeletedRecordList::pop(std::iostream& stream, const DeletedRecord& temp)
 {
+	//1. 현재 접근하고 있는 스트림 주소를 저장한다.
 	int now_addr = (int)stream.tellg();
 
+	//2. 리스트에서 제거하고자 하는 레코드에서 전후 레코드의 주소를 가져온다.
 	int prev_addr = temp.getPrevaddr();
 	int next_addr = temp.getNextaddr();
 
+	//3. 이전 레코드를 읽은 뒤
 	stream.seekg(prev_addr);
 	DeletedRecord prev(temp.getDelim());
 	if (prev.read(stream) != dr_deleted)
 		return -1;
-
+	//4. 이전 레코드를 이후 레코드와 연결하고
 	prev.setNextaddr(next_addr);
-
+	//5. 다시 스트림에 저장한다.
 	stream.seekp(prev_addr);
 	if (prev.write(stream) == -1)
 		return -1;
 
+	//6. 이후 레코드가 존재할 경우
 	DeletedRecord next(temp.getDelim());
 	if (next_addr != -1)
 	{
+		//7. 이후 레코드를 읽어들여서
 		stream.seekg(next_addr);
-		if (next.read(stream) != dr_deleted)
+ 		if (next.read(stream) != dr_deleted)
 			return -1;
-
+		//8. 이전 레코드와 이은 뒤
 		next.setPrevaddr(prev_addr);
-		
+		//9. 스트림에 저장한다.
 		stream.seekp(next_addr);
 		if (next.write(stream) == -1)
 			return -1;
 	}
 
+	//10. 현재 접근하고 있는 스트림 주소를 불러온다.
 	stream.seekg(now_addr);
 	return 1;
 }
 int DeletedRecordList::push(std::iostream& stream, DeletedRecord& temp, int addr)
 {
-	
+	//1. HEAD에 접근하여 관련정보를 갱신함.
 	stream.seekg(this->get_headaddr());
 	if (this->read(stream) != dr_deleted)
 		return -1;
@@ -260,27 +285,33 @@ int DeletedRecordList::push(std::iostream& stream, DeletedRecord& temp, int addr
 	int prev_addr = this->get_headaddr();
 	int next_addr = this->getNextaddr();
 	
+	//2. HEAD에서 새로 생성된 레코드를 연결하고 스트림에 쓴다.
 	this->setNextaddr(addr);
 	stream.seekp(prev_addr);
 	if (this->write(stream) == -1)
 		return -1;
 
+	//3. 만약 HEAD가 비어있지 않으면,
 	if (next_addr != -1)
 	{
+		//4. 해당 레코드를 가져와 새로 생성된 레코드를 연결한다.
 		stream.seekg(next_addr);
 		DeletedRecord next(temp.getDelim());
 		if (next.read(stream) != dr_deleted)
 			return -1;
 		next.setPrevaddr(addr);
 
+		//5. 그리고 레코드에 쓴다.
 		stream.seekp(next_addr);
 		if (next.write(stream) == -1)
 			return -1;
 	}
 		
+	//6. 새로 생성된 레코드는 HEAD와 원래 HEAD에 연결됐던 레코드를 연결하고
 	temp.setPrevaddr(prev_addr);
 	temp.setNextaddr(next_addr);
 
+	//7. 스트림에 쓴다.
 	stream.seekg(addr);
 	stream.seekp(addr);
 	if (temp.write(stream) == -1)

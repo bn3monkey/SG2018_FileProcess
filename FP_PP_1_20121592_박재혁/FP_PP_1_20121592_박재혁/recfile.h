@@ -72,7 +72,9 @@ int RecordFile<RecType>::Insert(const RecType & record)
 	int result;
 	result = record.Pack(Buffer);
 	if (!result) return -1;
-	return BufferFile::Insert();
+	result = BufferFile::Insert();
+	BufferFile::Rewind();
+	return result;
 }
 
 template <class RecType>

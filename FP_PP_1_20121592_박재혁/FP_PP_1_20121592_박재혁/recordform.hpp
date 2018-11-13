@@ -33,6 +33,7 @@ public:
 	}
 	DeletedRecordHead(const DeletedRecordHead& d)
 	{
+		this->deleted = deleted;
 		this->delim = d.delim;
 		this->page_num = d.page_num;
 		memcpy(this->buffer, d.buffer, head_size);
@@ -46,6 +47,7 @@ public:
 	}
 
 	//Record의 삭제, 미삭제 여부
+	void setDeleted(bool offset);
 	bool getDeleted() const ;
 
 	//구분자 get/set
@@ -124,6 +126,8 @@ public:
 	void setNextaddr(int addr);
 
 	// DeltedRecordHeader에 있는 member data에 대한 개별적인 get/set 함수.
+	void setDeleted(bool offset);
+	bool getDeleted() const;
 	void setDelim(char delim);
 	const char getDelim() const;
 	const char* getHead() const;
@@ -147,7 +151,6 @@ class DeletedRecordList : public DeletedRecord
 public:
 	DeletedRecordList(char delim = '|') : DeletedRecord(delim)
 	{
-		makeRecord();
 	}
 	const int get_headaddr() const
 	{
