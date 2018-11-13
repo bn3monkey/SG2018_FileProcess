@@ -141,6 +141,7 @@
     <Text Include="listOfLecture.txt" />
     <Text Include="listOfMember.txt" />
     <Text Include="listOfPurchase.txt" />
+    <Text Include="test_code.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="listOfLecture.dat" />

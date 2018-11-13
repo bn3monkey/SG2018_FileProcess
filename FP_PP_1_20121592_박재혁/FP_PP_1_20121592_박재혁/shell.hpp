@@ -68,140 +68,16 @@ int SchemeTest(const char* txtname, char* datname)
 	file.Close();
 
 	file.Open(datname, ios::in);
+	cout << "-------------------------------" << endl;
 	for (int i = 0; i < len && i < 10; i++)
 	{
 		T s;
 		file.Read(s);
 		cout << s;
 	}
+	cout << "-------------------------------" << endl;
 	file.Close();
 
-
-	file.Open(datname, ios::in);
-	std::vector<T> list;
-	std::vector<T> list2;
-	for (int i = 0; true; i++)
-	{
-		T s;
-		if (file.Read(s) == -1)
-			break;
-		list.push_back(s);
-	}
-	file.Close();
-	
-	while (!list.empty())
-	{
-		file.Open(datname, ios::in | ios::out);
-		T s = list.back();
-		list2.push_back(s);
-		list.pop_back();
-		file.Remove(s);
-
-		cout << "-------------------------------" << endl;
-		for (int i = 0; true; i++)
-		{
-			T s;
-			if (file.Read(s) == -1)
-				break;
-			cout << s;
-		}
-		cout << "-------------------------------" << endl;
-		file.Close();
-	}
-
-	for (int i = 0; i < list2.size();i++)
-	{
-		file.Open(datname, ios::in | ios::out);
-		T s = list2[i];
-		file.Insert(s);
-
-		cout << "-------------------------------" << endl;
-		for (int i = 0; true; i++)
-		{
-			T s;
-			if (file.Read(s) == -1)
-				break;
-			cout << s;
-		}
-		cout << "-------------------------------" << endl;
-		file.Close();
-	}
-
-	std::random_shuffle(list2.begin(), list2.end());
-	for (int i = 0; i < list2.size(); i++)
-	{
-		file.Open(datname, ios::in | ios::out);
-		T s = list2[i];
-		file.Remove(s);
-
-		cout << "-------------------------------" << endl;
-		for (int i = 0; true; i++)
-		{
-			T s;
-			if (file.Read(s) == -1)
-				break;
-			cout << s;
-		}
-		cout << "-------------------------------" << endl;
-		file.Close();
-	}
-
-	std::random_shuffle(list2.begin(), list2.end());
-	for (int i = 0; i < list2.size(); i++)
-	{
-		file.Open(datname, ios::in | ios::out);
-		T s = list2[i];
-		file.Insert(s);
-
-		cout << "-------------------------------" << endl;
-		for (int i = 0; true; i++)
-		{
-			T s;
-			if (file.Read(s) == -1)
-				break;
-			cout << s;
-		}
-		cout << "-------------------------------" << endl;
-		file.Close();
-	}
-
-	std::random_shuffle(list2.begin(), list2.end());
-	for (int i = 0; i < list2.size(); i++)
-	{
-		file.Open(datname, ios::in | ios::out);
-		T s = list2[i];
-		file.Remove(s);
-
-		cout << "-------------------------------" << endl;
-		for (int i = 0; true; i++)
-		{
-			T s;
-			if (file.Read(s) == -1)
-				break;
-			cout << s;
-		}
-		cout << "-------------------------------" << endl;
-		file.Close();
-	}
-
-	std::random_shuffle(list2.begin(), list2.end());
-	for (int i = 0; i < list2.size(); i++)
-	{
-		file.Open(datname, ios::in | ios::out);
-		T s = list2[i];
-		file.Insert(s);
-
-		cout << "-------------------------------" << endl;
-		for (int i = 0; true; i++)
-		{
-			T s;
-			if (file.Read(s) == -1)
-				break;
-			cout << s;
-		}
-		cout << "-------------------------------" << endl;
-		file.Close();
-	}
 }
 
 int End();

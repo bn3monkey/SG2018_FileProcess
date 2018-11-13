@@ -8,6 +8,7 @@ class Member : public Scheme
 private:
 	std::string ID;
 	std::string Password;
+	char Level;
 	std::string Name;
 	std::string PhoneNumber;
 	std::string Address;
@@ -41,6 +42,7 @@ public:
 
 	inline void update_ID(const std::string ID) { this->ID = ID; }
 	inline void update_Password(const std::string Password) { this->Password = Password; }
+	inline void update_Level(const char Level) { this->Level = Level; }
 	inline void update_Name(const std::string Name) { this->Name = Name; }
 	inline void update_PhoneNumber(const std::string PhoneNumber) { this->PhoneNumber = PhoneNumber; }
 	inline void update_Address(const std::string Address) { this->Address = Address; }
@@ -54,6 +56,8 @@ public:
 
 	// For project 1, return the primary key of scheme
 	const char* getKey() const { return this->ID.c_str(); }
+	// For project 2, return the level
+	const char getLevel() { return this->Level; }
 };
 
 istream &operator >> (istream& is, Member &s);

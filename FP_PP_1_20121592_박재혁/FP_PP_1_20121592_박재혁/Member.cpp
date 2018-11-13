@@ -4,6 +4,7 @@ void Member::copy(const Member* s)
 {
 	this->update_ID(s->ID);
 	this->update_Password(s->Password);
+	this->update_Level(s->Level);
 	this->update_Name(s->Name);
 	this->update_PhoneNumber(s->PhoneNumber);
 	this->update_Address(s->Address);
@@ -62,6 +63,8 @@ istream &operator >> (istream& is, Member &s)
 	is.getline(str, STDMAXBUF, '|');
 	s.update_Password(str);
 	is.getline(str, STDMAXBUF, '|');
+	s.update_Level(str[0]);
+	is.getline(str, STDMAXBUF, '|');
 	s.update_Name(str);
 	is.getline(str, STDMAXBUF, '|');
 	s.update_PhoneNumber(str);
@@ -75,6 +78,7 @@ ostream &operator << (ostream& os, Member &s)
 {
 	os << "ID : " << s.ID << endl;
 	os << "Password : " << s.Password << endl;
+	os << "Level : " << s.Level << endl;
 	os << "Name : " << s.Name << endl;
 	os << "PhoneNumber : " << s.PhoneNumber << endl;
 	os << "Address : " << s.Address << endl;
@@ -93,6 +97,11 @@ bool Member::Pack(IOBuffer& Buffer) const
 	numBytes = Buffer.Pack(this->ID.c_str());
 	if (numBytes == -1) return false;
 	numBytes = Buffer.Pack(this->Password.c_str());
+	if (numBytes == -1) return false;
+	char temp[2];
+	temp[0] = this->Level;
+	temp[1] = '\0';
+	numBytes = Buffer.Pack(&temp);
 	if (numBytes == -1) return false;
 	numBytes = Buffer.Pack(this->Name.c_str());
 	if (numBytes == -1) return false;
@@ -118,6 +127,10 @@ bool Member::Unpack(IOBuffer &Buffer)
 	numBytes = Buffer.Unpack(buf, STDMAXBUF);
 	if (numBytes == -1) return false;
 	this->update_Password(buf);
+
+	numBytes = Buffer.Unpack(buf, STDMAXBUF);
+	if (numBytes == -1) return false;
+	this->update_Level(buf[0]);
 
 	numBytes = Buffer.Unpack(buf, STDMAXBUF);
 	if (numBytes == -1) return false;

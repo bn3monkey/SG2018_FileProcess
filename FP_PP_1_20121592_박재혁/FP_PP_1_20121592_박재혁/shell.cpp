@@ -45,6 +45,8 @@ int PurchaseTest()
 	return SchemeTest<Purchase>("listOfPurchase.txt", "listOfPurchase.dat");
 }
 
+
+
 int (*prog_table[prog_len])() = 
 {
 	End, 
