@@ -1,4 +1,6 @@
-13
+14
+TestUser|T1234|9|Han JiWoo|010-1357-9753|Taecho|0000000013
+admin|adminpass|1|Admit?|010-8282-1234|Mapho|0000000014
 TestTestTestTestTestTestTestTestTestTestTestTest|TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest|9|TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest|010-1234-5628|PyungCheong|0000000012
 Bulbasaur|Bulbasaur1234|9|Bulbasaur Bulbasaur|010-1234-5678|Seoul|0000000001
 Ivysaur|Ivysaur1234|9|Ivysaur Ivysaur|010-1235-5678|Pusan|0000000002

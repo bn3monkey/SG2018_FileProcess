@@ -22,6 +22,9 @@
     <Filter Include="소스 파일\ShellClass">
       <UniqueIdentifier>{60829829-da47-4a39-8242-147094f32366}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\RecordManagerClass">
+      <UniqueIdentifier>{0d172551-2480-4ec8-a647-fc0e1c8f3d3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scheme.hpp">
@@ -60,8 +63,23 @@
     <ClInclude Include="recordform.hpp">
       <Filter>소스 파일\BufferClass</Filter>
     </ClInclude>
-    <ClInclude Include="RecordManagement.hpp">
-      <Filter>소스 파일\ShellClass</Filter>
+    <ClInclude Include="MemberManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicClassHeader.h">
+      <Filter>소스 파일\BasicClass</Filter>
+    </ClInclude>
+    <ClInclude Include="RecordManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="ManagerClassHeader.h">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="LectureManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="PurchaseManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +112,18 @@
     </ClCompile>
     <ClCompile Include="recordform.cpp">
       <Filter>소스 파일\BufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="MemberManager.cpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClCompile>
+    <ClCompile Include="LectureManager.cpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClCompile>
+    <ClCompile Include="PurchaseManager.cpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClCompile>
+    <ClCompile Include="TestModule.cpp">
+      <Filter>소스 파일\ShellClass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

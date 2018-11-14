@@ -123,3 +123,30 @@ file.Open(datname, ios::in);
 		cout << "-------------------------------" << endl;
 		file.Close();
 	}
+
+
+
+
+	
+	std::vector<Member> list;
+	pMemberManager->retrieve(list);
+	for (int i = 0; i < list.size(); ++i)
+		cout << list[i] << endl;
+	list.clear();
+	cout << "---------------------" << endl;
+	pMemberManager->retrieve(list);
+	for (int i = 0; i < list.size(); ++i)
+		cout << list[i] << endl;
+	list.clear();
+	cout << "---------------------" << endl;
+	pMemberManager->retrieve(list);
+	for (int i = 0; i < list.size(); ++i)
+		cout << list[i] << endl;
+	list.clear();
+	cout << "---------------------" << endl;
+	pMemberManager->retrieve(list);
+	for (int i = 0; i < list.size(); ++i)
+		cout << list[i] << endl;
+	list.clear();
+	delete Memberfile;
+	return 1;

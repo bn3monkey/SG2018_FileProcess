@@ -204,8 +204,10 @@ int DelimFieldBuffer::Insert(iostream &stream)
 	}
 	//4. 삭제된 레코드 리스트에서 공간이 없으면, 레코드 맨 뒤에 쓴다.
 	stream.seekp(0, ios::end);
+	removeAddr = (int)stream.tellp();
 	if (this->Write(stream) == -1)
 		return -1;
+
 
 	return removeAddr;
 }

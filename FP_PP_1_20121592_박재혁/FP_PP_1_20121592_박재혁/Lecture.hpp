@@ -22,9 +22,11 @@ public:
 	Lecture();
 	Lecture(const Scheme& s);
 
+	
 	Lecture& operator =(const Scheme &s);
 	bool operator ==(const Scheme &s);
 	bool operator !=(const Scheme &s);
+	
 
 	Lecture& operator =(const Lecture &s)
 	{
@@ -80,8 +82,10 @@ public:
 	bool Pack(IOBuffer& Buffer) const;
 	bool Unpack(IOBuffer &);
 
-	// For project 1, return the primary key of scheme
-	const char* getKey() const { return this->LectureID; }
+	// For project 1, return the key of scheme
+	const char* getKey(const int seed = 0) const { return this->LectureID; }
+	void setKey(const char* key, const int seed = 0) { this->update_lectureid(key); }
+
 };
 
 istream &operator >> (istream& is, Lecture &s);

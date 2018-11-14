@@ -36,6 +36,7 @@ Lecture::Lecture(const Scheme& s)
 	}, s);
 }
 
+
 Lecture& Lecture::operator=(const Scheme &s)
 {
 	this->auto_cast_method<Lecture>(

@@ -1,11 +1,10 @@
 #pragma once
-#include "Purchase.hpp"
 #include <vector>
 #include <fstream>
-
 #include <algorithm>
 
 #include "recfile.h"
+#include "ManagerClassHeader.h"
 
 //#define METHOD_TEST 
 
@@ -87,6 +86,7 @@ int showPurchase();
 int MemberTest();
 int LectureTest();
 int PurchaseTest();
+int LecturePurchaseSystem();
 
 enum prog_name
 {
@@ -97,6 +97,7 @@ enum prog_name
 	prog_membertest,
 	prog_lecturetest,
 	prog_purchasetest,
+	prog_lecturepurchasesystem,
 	prog_len,
 };
 

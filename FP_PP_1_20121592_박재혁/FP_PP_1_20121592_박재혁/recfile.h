@@ -17,9 +17,12 @@ class RecordFile: public BufferFile
 
 	/* for project 1 */
 	// return the record address corresponding to key 
-	int Find(const RecType & record);
+	int Find(const RecType& record);
 	int Remove(const RecType& record, int recaddr = -1);
 	int Insert(const RecType& record);
+	int Update(const RecType& record, int recaddr = -1);
+
+	inline int NextRecord() { return (int)File.tellg();  }
 
 	RecordFile (IOBuffer & buffer): BufferFile (buffer) {}
 };
@@ -50,8 +53,14 @@ int RecordFile<RecType>::Write (const RecType & record, int recaddr = -1)
 template <class RecType>
 int RecordFile<RecType>::Remove(const RecType& record, int recaddr = -1)
 {
-	int removeAddr = Find(record);
-	if (removeAddr == -1) return -1;
+	int removeAddr;
+	if (recaddr == -1)
+	{
+		removeAddr = Find(record);
+		if (removeAddr == -1) return -1;
+	}
+	else
+		removeAddr = recaddr;
 	int result = BufferFile::Remove(removeAddr);
 	BufferFile::Rewind();
 	return result;
@@ -78,27 +87,36 @@ int RecordFile<RecType>::Insert(const RecType & record)
 }
 
 template <class RecType>
-int RecordFile<RecType>::Find(const RecType & record)
+int RecordFile<RecType>::Find(const RecType& record)
 {
 	int result;
 	result = record.Pack(Buffer);
 	if (!result) return -1;
-	const char* key = record.getKey();
+	//const char* key = record.getKey(seed);
 
 	//1. Start the beginning of file
 	BufferFile::Rewind();
 
-	RecType target =  RecType();
+	RecType target = RecType();
 	//2. Read sequentially and compare with record
 	for (result = this->Read(target); result != EOF; result = this->Read(target))
 	{
 		// if you find, break
-		if (strcmp(target.getKey(),key) == 0)
+		if (target == record)
 			break;
 	}
 
 	//3. Rewind the file
 	BufferFile::Rewind();
+	return result;
+}
+template <class RecType>
+int RecordFile<RecType>::Update(const RecType & record, int recaddr = -1)
+{
+	int result;
+	result = this->Remove(record, recaddr);
+	if (result == -1) return -1;
+	result = this->Insert(record);
 	return result;
 }
 

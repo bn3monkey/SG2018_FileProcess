@@ -111,7 +111,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="BasicClassHeader.h" />
     <ClInclude Include="buffile.h" />
+    <ClInclude Include="LectureManager.hpp" />
+    <ClInclude Include="MemberManager.hpp" />
+    <ClInclude Include="PurchaseManager.hpp" />
     <ClInclude Include="recordform.hpp" />
     <ClInclude Include="delim.h" />
     <ClInclude Include="iobuffer.h" />
@@ -119,7 +123,8 @@
     <ClInclude Include="Member.hpp" />
     <ClInclude Include="Purchase.hpp" />
     <ClInclude Include="recfile.h" />
-    <ClInclude Include="RecordManagement.hpp" />
+    <ClInclude Include="RecordManager.hpp" />
+    <ClInclude Include="ManagerClassHeader.h" />
     <ClInclude Include="Scheme.hpp" />
     <ClInclude Include="SchemeList.hpp" />
     <ClInclude Include="shell.hpp" />
@@ -130,11 +135,15 @@
     <ClCompile Include="delim.cpp" />
     <ClCompile Include="iobuffer.cpp" />
     <ClCompile Include="Lecture.cpp" />
+    <ClCompile Include="LectureManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Member.cpp" />
+    <ClCompile Include="MemberManager.cpp" />
     <ClCompile Include="Purchase.cpp" />
+    <ClCompile Include="PurchaseManager.cpp" />
     <ClCompile Include="recordform.cpp" />
     <ClCompile Include="shell.cpp" />
+    <ClCompile Include="TestModule.cpp" />
     <ClCompile Include="varlen.cpp" />
   </ItemGroup>
   <ItemGroup>

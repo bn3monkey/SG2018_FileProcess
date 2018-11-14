@@ -1,5 +1,6 @@
 #include "shell.hpp"
-#include <string>
+
+#include "TestModule.cpp"
 using namespace std;
 
 //RecordFile <Member> mfile;
@@ -25,7 +26,7 @@ int MemberTest()
 
 int showLecture()
 {
-	cout << "--Show Member--" << endl;
+	cout << "--Show Lecture--" << endl;
 	return showScheme<Lecture>("listOfLecture.txt");
 }
 int LectureTest()
@@ -44,7 +45,15 @@ int PurchaseTest()
 	cout << "--Purchase Test--" << endl;
 	return SchemeTest<Purchase>("listOfPurchase.txt", "listOfPurchase.dat");
 }
-
+int LecturePurchaseSystem()
+{
+	cout << "----LecturePurchaseSystem-----" << endl;
+	
+	MemberManagerTest();
+	LectureManagerTest();
+	PurchaseManagerTest();
+	return 1;
+}
 
 
 int (*prog_table[prog_len])() = 
@@ -56,4 +65,5 @@ int (*prog_table[prog_len])() =
 	MemberTest,
 	LectureTest,
 	PurchaseTest,
+	LecturePurchaseSystem,
 };

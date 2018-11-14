@@ -2,6 +2,13 @@
 #include "Member.hpp"
 #include "Lecture.hpp"
 
+enum PurchaseSeed
+{
+	seed_both,
+	seed_lecture,
+	seed_member,
+};
+
 class Purchase : public Scheme
 {
 private:
@@ -59,8 +66,43 @@ public:
 	bool Pack(IOBuffer& Buffer) const;
 	bool Unpack(IOBuffer &);
 
-	// For project 1, return the primary key of scheme
-	const char* getKey() const { return this->PurchaseID.c_str(); }
+	// For project 1, return the key of scheme
+	const char* getKey(const int seed) const
+	{
+		switch (seed)
+		{
+		case seed_both:
+			return this->PurchaseID.c_str();
+		case seed_lecture:
+			return this->LectureID;
+		case seed_member:
+			return this->MemberID.c_str();
+		}
+	}
+	void setKey(const char* key, const int seed)
+	{
+		switch (seed)
+		{
+		case seed_both:
+			this->update_purchaseid(key);
+		case seed_lecture:
+			this->update_lectureid(key);
+		case seed_member:
+			this->update_memberid(key);
+		}
+	}
+	const bool checkRedundant(const Purchase& e, const int seed) const
+	{
+		switch (seed)
+		{
+		case seed_both:
+			return (strcmp(this->LectureID, e.LectureID) ? false : true) && (this->MemberID.compare(e.MemberID) ? false : true);
+		case seed_lecture:
+			return strcmp(this->LectureID, e.LectureID) ? false : true;
+		case seed_member:
+			return this->MemberID.compare(e.MemberID) ? false : true;
+		}
+	}
 };
 
 istream &operator >> (istream& is, Purchase &s);

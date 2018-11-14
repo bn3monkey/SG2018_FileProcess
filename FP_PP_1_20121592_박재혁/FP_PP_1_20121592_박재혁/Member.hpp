@@ -35,10 +35,11 @@ public:
 		return this->compare(&s) == 0 ? false : true;
 	}
 
+	
 	Member& operator =(const Scheme &s);
 	bool operator ==(const Scheme &s);
 	bool operator !=(const Scheme &s);
-
+	
 
 	inline void update_ID(const std::string ID) { this->ID = ID; }
 	inline void update_Password(const std::string Password) { this->Password = Password; }
@@ -54,10 +55,12 @@ public:
 	bool Pack(IOBuffer& Buffer) const;
 	bool Unpack(IOBuffer &);
 
-	// For project 1, return the primary key of scheme
-	const char* getKey() const { return this->ID.c_str(); }
+	// For project 1, return the key of scheme
+	const char* getKey(const int seed = 0) const { return this->ID.c_str(); }
+	void setKey(const char* key, const int seed = 0) { this->update_ID(key); }
 	// For project 2, return the level
 	const char getLevel() { return this->Level; }
+	const std::string getPassword() { return this->Password; }
 };
 
 istream &operator >> (istream& is, Member &s);
