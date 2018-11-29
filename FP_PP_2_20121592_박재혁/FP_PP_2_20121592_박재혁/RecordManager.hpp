@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "recfile.h"
+#include "Indfile.h"
 #include "BasicClassHeader.h"
 
 enum Authority
@@ -24,17 +24,48 @@ template <class RecType>
 class RecordManager
 {
 protected:
+	int is_indexed;
 	RecordFile<RecType>* file;
+	TextIndexedFile<RecType>* indfile;
 	RecType current;
 	char* filename;
 	int view_addr;
 
-	inline int Open(int MODE) { return this->file->Open(this->filename, MODE); }
-	inline int Open(const char* filename, int MODE) { return this->file->Open(filename, MODE); }
-	inline int Close() { return this->file->Close(); }
+	inline int Open(int MODE) 
+	{
+		if(is_indexed)
+			return this->indfile->Open(this->filename, MODE);
+		else
+			return this->file->Open(this->filename, MODE);
+	}
+	inline int Open(std::string filename, int MODE) 
+	{
+		char name[50];
+		memcpy(name, this->filename, strlen(this->filename));
+		if (is_indexed)
+			return this->indfile->Open(name, MODE);
+		else
+			return this->file->Open(this->filename, MODE);
+	}
+	inline int Close() 
+	{
+		if (is_indexed)
+			return this->indfile->Close();
+		else
+			return this->file->Close(); 
+	}
 
 public:
-	RecordManager(char* _filename, RecordFile<RecType>* _file) : filename(_filename) , file(_file), view_addr(-1) {}
+	RecordManager(char* _filename, RecordFile<RecType>* _file) : filename(_filename) , file(_file), view_addr(-1) 
+	{
+		file = _file;
+		is_indexed = 0;
+	}
+	RecordManager(char* _filename, TextIndexedFile<RecType>* _file) : filename(_filename), view_addr(-1)
+	{
+		indfile = _file;
+		is_indexed = 1;
+	}
 	~RecordManager() { 
 	}
 

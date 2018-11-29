@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{088B29FC-1740-4794-97DF-6B3D8772D2A4}</ProjectGuid>
+    <ProjectGuid>{0231B8D4-EE50-47B0-921F-FCC4F021E290}</ProjectGuid>
     <RootNamespace>FP_PP_1_20121592_박재혁</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -113,8 +113,13 @@
   <ItemGroup>
     <ClInclude Include="BasicClassHeader.h" />
     <ClInclude Include="buffile.h" />
+    <ClInclude Include="fixfld.h" />
+    <ClInclude Include="fixlen.h" />
+    <ClInclude Include="indfile.h" />
     <ClInclude Include="interface.h" />
+    <ClInclude Include="LectureIndexManager.hpp" />
     <ClInclude Include="LectureManager.hpp" />
+    <ClInclude Include="MemberIndexManager.hpp" />
     <ClInclude Include="MemberManager.hpp" />
     <ClInclude Include="PurchaseManager.hpp" />
     <ClInclude Include="recordform.hpp" />
@@ -129,23 +134,31 @@
     <ClInclude Include="Scheme.hpp" />
     <ClInclude Include="SchemeList.hpp" />
     <ClInclude Include="shell.hpp" />
+    <ClInclude Include="textind.h" />
+    <ClInclude Include="tindbuff.h" />
     <ClInclude Include="varlen.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffile.cpp" />
     <ClCompile Include="delim.cpp" />
+    <ClCompile Include="fixfld.cpp" />
+    <ClCompile Include="fixlen.cpp" />
     <ClCompile Include="interface.cpp" />
     <ClCompile Include="iobuffer.cpp" />
     <ClCompile Include="Lecture.cpp" />
+    <ClCompile Include="LectureIndexManager.cpp" />
     <ClCompile Include="LectureManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Member.cpp" />
+    <ClCompile Include="MemberIndexManager.cpp" />
     <ClCompile Include="MemberManager.cpp" />
     <ClCompile Include="Purchase.cpp" />
     <ClCompile Include="PurchaseManager.cpp" />
     <ClCompile Include="recordform.cpp" />
     <ClCompile Include="shell.cpp" />
     <ClCompile Include="TestModule.cpp" />
+    <ClCompile Include="textind.cpp" />
+    <ClCompile Include="tindbuff.cpp" />
     <ClCompile Include="varlen.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -155,9 +168,10 @@
     <Text Include="test_code.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="listOfLecture.dat" />
-    <None Include="listOfMember.dat" />
-    <None Include="listOfPurchase.dat" />
+    <None Include="fileOfLecture.dat" />
+    <None Include="fileOfMember.dat" />
+    <None Include="fileOfMember.ind" />
+    <None Include="fileOfPurchase.dat" />
     <None Include="temp_file.dat" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -25,6 +25,9 @@
     <Filter Include="소스 파일\RecordManagerClass">
       <UniqueIdentifier>{0d172551-2480-4ec8-a647-fc0e1c8f3d3c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\FixedBufferClass">
+      <UniqueIdentifier>{d15e9694-38e4-4099-9839-0e93eca8fb53}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scheme.hpp">
@@ -84,6 +87,27 @@
     <ClInclude Include="interface.h">
       <Filter>소스 파일\RecordManagerClass</Filter>
     </ClInclude>
+    <ClInclude Include="fixfld.h">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="fixlen.h">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="indfile.h">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="textind.h">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="tindbuff.h">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="LectureIndexManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="MemberIndexManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffile.cpp">
@@ -131,6 +155,24 @@
     <ClCompile Include="interface.cpp">
       <Filter>소스 파일\RecordManagerClass</Filter>
     </ClCompile>
+    <ClCompile Include="fixfld.cpp">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="fixlen.cpp">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="textind.cpp">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="tindbuff.cpp">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="LectureIndexManager.cpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClCompile>
+    <ClCompile Include="MemberIndexManager.cpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="listOfMember.txt">
@@ -147,16 +189,19 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <None Include="listOfMember.dat">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="listOfLecture.dat">
-      <Filter>리소스 파일</Filter>
-    </None>
-    <None Include="listOfPurchase.dat">
-      <Filter>리소스 파일</Filter>
-    </None>
     <None Include="temp_file.dat">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="fileOfMember.ind">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="fileOfLecture.dat">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="fileOfMember.dat">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="fileOfPurchase.dat">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>

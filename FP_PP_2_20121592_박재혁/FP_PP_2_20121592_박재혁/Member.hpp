@@ -56,6 +56,7 @@ public:
 	bool Unpack(IOBuffer &);
 
 	// For project 1, return the key of scheme
+	const char* Key() const  { return getKey(); }
 	const char* getKey(const int seed = 0) const { return this->ID.c_str(); }
 	void setKey(const char* key, const int seed = 0) { this->update_ID(key); }
 	// For project 2, return the level

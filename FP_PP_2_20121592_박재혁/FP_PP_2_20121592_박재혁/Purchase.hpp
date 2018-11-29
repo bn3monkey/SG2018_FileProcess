@@ -67,6 +67,7 @@ public:
 	bool Unpack(IOBuffer &);
 
 	// For project 1, return the key of scheme
+	virtual const char* Key() const { return getKey(seed_both); }
 	const char* getKey(const int seed) const
 	{
 		switch (seed)

@@ -7,12 +7,20 @@ void ManagerInterface::login()
 	std::string id, password;
 	while (true)
 	{
-		cout << "---Input your id and password (if you wanna out, press '.' and enter)---" << endl;
+		cout << "---Input your id and password ---" << endl;
+		cout << "if you wanna out, press '.' and enter--- " << endl;
+		cout << "if you want to go index mode, type 'index' and enter " << endl;
+		
 		cout << "id : ";
 		cin >> id;
 		if (!id.compare("."))
 		{
 			end = -1;
+			return;
+		}
+		if (!id.compare("index"))
+		{
+			nextState(&ManagerInterface::index_menu);
 			return;
 		}
 		cout << "password : ";
@@ -28,6 +36,7 @@ void ManagerInterface::login()
 		}
 	}
 }
+
 void ManagerInterface::admin_menu()
 {
 	RM_errcode err;
@@ -1177,4 +1186,290 @@ void ManagerInterface::purchase_my_search()
 	cout << "Press the Button" << endl;
 	getchar();
 	getchar();
+}
+
+/***************************************************************************/
+
+void ManagerInterface::index_menu()
+{
+	while (true)
+	{
+		int menu;
+		cout << "---Welcome to Index Menu---" << endl;
+		cout << "1. Member View" << endl;
+		cout << "2. Member Insert" << endl;
+		cout << "3. Member Update" << endl;
+		cout << "4. Member Remove" << endl;
+		cout << "5. Member Search" << endl;
+		cout << "0. end" << endl;
+		cout << "-----------------------" << endl;
+
+		cin >> menu;
+
+		switch (menu)
+		{
+		case 0: end = true; return;
+		case 1: nextState(&ManagerInterface::memberindex_retrieve); return;
+		case 2: nextState(&ManagerInterface::memberindex_insert); return;
+		case 3: nextState(&ManagerInterface::memberindex_update); return;
+		case 4: nextState(&ManagerInterface::memberindex_remove); return;
+		case 5: nextState(&ManagerInterface::memberindex_search); return;
+		}
+	}
+}
+
+void ManagerInterface::memberindex_retrieve()
+{
+	std::vector<Member> list;
+	cout << "---Member retrieve---" << endl;
+	pIMM->retrieve(list);
+	for (int i = 0; i < list.size(); ++i)
+		cout << list[i] << endl;
+
+	nextState(&ManagerInterface::index_menu);
+	cout << "---Member retrieve---" << endl;
+	cout << "Press the Button" << endl;
+	getchar();
+	getchar();
+}
+void ManagerInterface::memberindex_insert()
+{
+	RM_errcode err;
+	std::string element;
+	cout << "---Member insert---" << endl;
+
+	cout << "Enter the ID : ";
+	cin >> element;
+	m.update_ID(element);
+
+	cout << "Enter the password : ";
+	cin >> element;
+	m.update_Password(element);
+
+	cout << "Enter the level : ";
+	cin >> element;
+	m.update_Level(element[0]);
+
+	cout << "Enter the Name : ";
+	cin >> element;
+	m.update_Name(element);
+
+	cout << "Enter the address : ";
+	cin >> element;
+	m.update_Address(element);
+
+	cout << "Enter the Phone Number : ";
+	cin >> element;
+	m.update_PhoneNumber(element);
+
+	cout << "Enter the Mileage: ";
+	cin >> element;
+	m.update_mileage(element.c_str());
+
+	err = pIMM->insert(m);
+	if (err == RM_valid)
+	{
+		cout << "Success!" << endl;
+	}
+	else
+	{
+		cout << "Fail!" << endl;
+	}
+
+	nextState(&ManagerInterface::index_menu);
+	cout << "---Member insert---" << endl;
+	cout << "Press the Button" << endl;
+	getchar();
+	getchar();
+}
+void ManagerInterface::memberindex_update()
+{
+	RM_errcode err;
+	std::string element;
+	cout << "---Member update---" << endl;
+	cout << "<<Current Member>>" << endl;
+	cout << m;
+	cout << "<<Current Member>>" << endl;
+
+	cout << "wanna update?" << endl << " if not, press '0'. or press any else  " << endl;
+	char dat;
+	cin >> dat;
+	if (dat == '0')
+	{
+		nextState(&ManagerInterface::index_menu);
+		cout << "---Member update---" << endl;
+		cout << "Press the Button" << endl;
+		getchar();
+		getchar();
+		return;
+	}
+
+	cout << "If you do not wanna change, Press '.' and Enter!" << endl;
+	cout << "Enter the password : ";
+	cin >> element;
+	if (element.compare("."))
+		m.update_Password(element);
+
+	cout << "Enter the level : ";
+	cin >> element;
+	if (element.compare("."))
+		m.update_Level(element[0]);
+
+	cout << "Enter the Name : ";
+	cin >> element;
+	if (element.compare("."))
+		m.update_Name(element);
+
+	cout << "Enter the address : ";
+	cin >> element;
+	if (element.compare("."))
+		m.update_Address(element);
+
+	cout << "Enter the Phone Number : ";
+	cin >> element;
+	if (element.compare("."))
+		m.update_PhoneNumber(element);
+
+	cout << "Enter the Mileage: ";
+	cin >> element;
+	if (element.compare("."))
+		m.update_mileage(element.c_str());
+
+	err = pIMM->update(m);
+	if (err == RM_valid)
+	{
+		cout << "Success!" << endl;
+	}
+	else
+	{
+		cout << "Fail!" << endl;
+	}
+
+	nextState(&ManagerInterface::index_menu);
+	cout << "---Member update---" << endl;
+	cout << "Press the Button" << endl;
+	getchar();
+	getchar();
+}
+void ManagerInterface::memberindex_remove()
+{
+	RM_errcode err;
+	std::string element;
+	cout << "---Member remove---" << endl;
+	cout << "<<Current Member>>" << endl;
+	cout << m;
+	cout << "<<Current Member>>" << endl;
+
+	cout << "wanna remove?" << endl << " if not, press '0'. or press any else  " << endl;
+	char dat;
+	cin >> dat;
+	if (dat == '0')
+	{
+		nextState(&ManagerInterface::index_menu);
+		cout << "---Member remove---" << endl;
+		cout << "Press the Button" << endl;
+		getchar();
+		getchar();
+		return;
+	}
+
+	err = pIMM->remove(m);
+	m = Member();
+	if (err == RM_valid)
+	{
+		cout << "Success!" << endl;
+	}
+	else
+	{
+		if (err == RM_noauth)
+		{
+			cout << "You delete yourself\n" << endl;
+			end = true;
+			return;
+		}
+		cout << "Fail!" << endl;
+	}
+
+	nextState(&ManagerInterface::index_menu);
+	cout << "---Member update---" << endl;
+	cout << "Press the Button" << endl;
+	getchar();
+	getchar();
+}
+void ManagerInterface::memberindex_search()
+{
+	RM_errcode err;
+	std::string element;
+	cout << "---Member search---" << endl;
+
+	cout << "wanna search?" << endl << " if not, press '0'. or press any else  " << endl;
+	char dat;
+	cin >> dat;
+	if (dat == '0')
+	{
+		nextState(&ManagerInterface::index_menu);
+		cout << "---Member search---" << endl;
+		cout << "Press the Button" << endl;
+		getchar();
+		getchar();
+		return;
+	}
+
+	Member source;
+	cout << "Enter the ID : ";
+	cin >> element;
+	source.update_ID(element);
+	err = pIMM->search(source, m);
+
+	cout << "<<Current Member>>" << endl;
+	cout << m;
+	cout << "<<Current Member>>" << endl;
+
+	if (err == RM_valid)
+	{
+		cout << "Success!" << endl;
+	}
+	else
+	{
+		cout << "Fail!" << endl;
+	}
+
+	nextState(&ManagerInterface::index_menu);
+	cout << "---Member search---" << endl;
+	cout << "Press the Button" << endl;
+	getchar();
+	getchar();
+}
+
+
+void ManagerInterface::play()
+{
+	RecordFile <Member>* Memberfile = new RecordFile<Member>(DelimFieldBuffer('|', STDMAXBUF));
+	pMM = new MemberManager("fileOfMember.dat", Memberfile);
+
+	RecordFile <Lecture>* Lecturefile = new RecordFile<Lecture>(DelimFieldBuffer('|', STDMAXBUF));
+	pLM = new LectureManager("fileOfLecture.dat", Lecturefile);
+
+	RecordFile <Purchase>* Purchasefile = new RecordFile<Purchase>(DelimFieldBuffer('|', STDMAXBUF));
+	pPM = new PurchaseManager("fileOfPurchase.dat", Purchasefile);
+
+	
+	TextIndexedFile <Member>* MemberIndexfile = new TextIndexedFile<Member>(DelimFieldBuffer('|', STDMAXBUF), 16);
+	MemberIndexfile->initilaize("fileOfMember");
+	pIMM = new MemberIndexManager("fileOfMember", MemberIndexfile);
+	
+	pMM->setPurchaseManager(*pPM);
+	pLM->setPurchaseManager(*pPM);
+
+	while (!end)
+	{
+		(this->*state)();
+	}
+
+	delete Memberfile;
+	delete Lecturefile;
+	delete Purchasefile;
+	delete pPM;
+	delete pMM;
+	delete pLM;
 }

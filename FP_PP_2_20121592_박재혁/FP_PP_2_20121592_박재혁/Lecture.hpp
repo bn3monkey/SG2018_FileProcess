@@ -83,6 +83,7 @@ public:
 	bool Unpack(IOBuffer &);
 
 	// For project 1, return the key of scheme
+	const char* Key() const { return getKey(); } 
 	const char* getKey(const int seed = 0) const { return this->LectureID; }
 	void setKey(const char* key, const int seed = 0) { this->update_lectureid(key); }
 

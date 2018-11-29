@@ -20,7 +20,7 @@ int BufferFile::Open (char * filename, int mode)
 	if (! File.good()) return FALSE;
 	File . seekg(0, ios::beg); File . seekp(0, ios::beg);
 	HeaderSize = ReadHeader();
-	if (!HeaderSize) // no header and file opened for output
+	if (HeaderSize < 0) // no header and file opened for output
 		return FALSE;
 	File . seekp (HeaderSize, ios::beg);
 	File . seekg (HeaderSize, ios::beg);

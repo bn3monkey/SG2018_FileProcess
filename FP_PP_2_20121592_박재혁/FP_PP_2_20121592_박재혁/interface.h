@@ -1,6 +1,7 @@
 #pragma once
 #include "LectureManager.hpp"
 #include "MemberManager.hpp"
+#include "MemberIndexManager.hpp"
 
 class ManagerInterface
 {
@@ -8,6 +9,7 @@ private:
 	MemberManager* pMM;
 	LectureManager* pLM;
 	PurchaseManager* pPM;
+	MemberIndexManager* pIMM;
 
 	//검색된 것들을 보관하는 공간
 	Member m;
@@ -20,6 +22,7 @@ private:
 	void nextState(void (ManagerInterface::*func)()) { state = func; }
 
 	void login();
+	void index_menu();
 	void admin_menu();
 	void normal_menu();
 
@@ -54,6 +57,12 @@ private:
 	void purchase_my_remove();
 	void purchase_my_search();
 
+	void memberindex_retrieve();
+	void memberindex_insert();
+	void memberindex_update();
+	void memberindex_remove();
+	void memberindex_search();
+
 
 public:
 	ManagerInterface() : end(false) 
@@ -62,31 +71,6 @@ public:
 	}
 
 	
-	void play()
-	{
-		RecordFile <Member>* Memberfile = new RecordFile<Member>(DelimFieldBuffer('|', STDMAXBUF));
-		pMM = new MemberManager("listOfMember.dat", Memberfile);
-
-		RecordFile <Lecture>* Lecturefile = new RecordFile<Lecture>(DelimFieldBuffer('|', STDMAXBUF));
-		pLM = new LectureManager("listOfLecture.dat", Lecturefile);
-
-		RecordFile <Purchase>* Purchasefile = new RecordFile<Purchase>(DelimFieldBuffer('|', STDMAXBUF));
-		pPM = new PurchaseManager("listOfPurchase.dat", Purchasefile);
-
-		pMM->setPurchaseManager(*pPM);
-		pLM->setPurchaseManager(*pPM);
-
-		while (!end)
-		{
-			(this->*state)();
-		}
-
-		delete Memberfile;
-		delete Lecturefile;
-		delete Purchasefile;
-		delete pPM;
-		delete pMM;
-		delete pLM;
-	}
+	void play();
 
 };

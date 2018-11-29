@@ -68,4 +68,5 @@ public:
 	// For project 1, return the key of scheme
 	virtual const char* getKey(const int seed) const = 0;
 	virtual void setKey(const char* key, const int seed)  = 0;
+	virtual const char* Key() const = 0;
 };

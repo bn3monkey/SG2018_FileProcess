@@ -16,7 +16,7 @@ int showMember()
 int MemberTest()
 {
 	cout << "--Member Test--" << endl;
-	return SchemeTest<Member>("listOfMember.txt" , "listOfMember.dat");
+	return SchemeTest<Member>("listOfMember.txt" , "fileOfMember.dat");
 }
 
 int showLecture()
@@ -27,7 +27,7 @@ int showLecture()
 int LectureTest()
 {
 	cout << "--Lecture Test--" << endl;
-	return SchemeTest<Lecture>("listOfLecture.txt", "listOfLecture.dat");
+	return SchemeTest<Lecture>("listOfLecture.txt", "fileOfLecture.dat");
 }
 
 int showPurchase()
@@ -38,7 +38,7 @@ int showPurchase()
 int PurchaseTest()
 {
 	cout << "--Purchase Test--" << endl;
-	return SchemeTest<Purchase>("listOfPurchase.txt", "listOfPurchase.dat");
+	return SchemeTest<Purchase>("listOfPurchase.txt", "fileOfPurchase.dat");
 }
 int LecturePurchaseSystem()
 {

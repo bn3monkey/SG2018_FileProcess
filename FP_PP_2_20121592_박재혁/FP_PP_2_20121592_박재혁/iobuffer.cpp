@@ -73,7 +73,7 @@ static const int headerSize = 8;
 
 int IOBuffer::ReadHeader (istream & stream) 
 {
-	char str[headerSize+1];
+	char str[headerSize + 1] = { 0 };
 	stream . seekg (0, ios::beg);
 	stream . read (str, headerSize);
 	if (! stream . good ()) return -1;
