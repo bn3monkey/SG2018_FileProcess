@@ -7,6 +7,7 @@ private:
 	Authority auth;
 	Member profile;
 	PurchaseManager* pPurchaseManager;
+
 public:
 	MemberManager(char* filename, RecordFile<Member>* file) : RecordManager<Member>(filename, file) 
 	{

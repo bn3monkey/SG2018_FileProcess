@@ -1,5 +1,8 @@
 #include "interface.h"
 
+inline void flush() {
+	while (getchar() != '\n');
+}
 
 void ManagerInterface::login()
 {
@@ -8,8 +11,8 @@ void ManagerInterface::login()
 	while (true)
 	{
 		cout << "---Input your id and password ---" << endl;
-		cout << "if you wanna out, press '.' and enter--- " << endl;
-		cout << "if you want to go index mode, type 'index' and enter " << endl;
+		cout << "if you wanna out, press '.' and press enter " << endl;
+		//cout << "if you want to go index mode, type 'index' and enter " << endl;
 		
 		cout << "id : ";
 		cin >> id;
@@ -18,15 +21,17 @@ void ManagerInterface::login()
 			end = -1;
 			return;
 		}
+		/*
 		if (!id.compare("index"))
 		{
 			nextState(&ManagerInterface::index_menu);
 			return;
 		}
+		*/
 		cout << "password : ";
 		cin >> password;
 
-		auth = pMM->verify(id, password);
+		auth = pIMM->verify(id, password);
 		switch(auth)
 		{
 		case auth_noneid: cout << "check your id" << endl; break;
@@ -64,6 +69,7 @@ void ManagerInterface::admin_menu()
 		cout << "-----------------------" << endl;
 
 		cin >> menu;
+		flush();
 
 		switch (menu)
 		{
@@ -83,6 +89,7 @@ void ManagerInterface::admin_menu()
 		case 13: nextState(&ManagerInterface::purchase_update); return;
 		case 14: nextState(&ManagerInterface::purchase_remove); return;
 		case 15: nextState(&ManagerInterface::purchase_search); return;
+		default: nextState(&ManagerInterface::admin_menu); return;
 		}
 	}
 }
@@ -108,6 +115,7 @@ void ManagerInterface::normal_menu()
 		cout << "-----------------------" << endl;
 
 		cin >> menu;
+		flush();
 
 		switch (menu)
 		{
@@ -122,6 +130,7 @@ void ManagerInterface::normal_menu()
 		case 8: nextState(&ManagerInterface::purchase_my_update); return;
 		case 9: nextState(&ManagerInterface::purchase_my_remove); return;
 		case 10: nextState(&ManagerInterface::purchase_my_search); return;
+		default: nextState(&ManagerInterface::normal_menu); return;
 		}
 	}
 }
@@ -129,52 +138,61 @@ void ManagerInterface::normal_menu()
 void ManagerInterface::member_retrieve()
 {
 	std::vector<Member> list;
-	cout << "---Member retrieve---" << endl;
-	pMM->retrieve(list);
+	cout << "----------------------- Member retrieve -------------------------" << endl;
+	pIMM->retrieve(list);
 	for (int i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Member retrieve---" << endl;
+	cout << "----------------------- Member retrieve -------------------------" << endl;
 	cout << "Press the Button" << endl;
 	getchar();
-	getchar();
+
 }
 void ManagerInterface::member_insert()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Member insert---" << endl;
+	cout << "----------------------- Member insert -------------------------" << endl;
+	cout << "if you want to cancel typing member data, press '.' and enter" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 	
 	cout << "Enter the ID : ";
 	cin >> element;
+	if (!element.compare(".")) goto MEMBER_INSERT_OUT;
 	m.update_ID(element);
 
 	cout << "Enter the password : ";
 	cin >> element;
+	if (!element.compare(".")) goto MEMBER_INSERT_OUT;
 	m.update_Password(element);
 
 	cout << "Enter the level : ";
 	cin >> element;
+	if (!element.compare(".")) goto MEMBER_INSERT_OUT;
 	m.update_Level(element[0]);
 
 	cout << "Enter the Name : ";
 	cin >> element;
+	if (!element.compare(".")) goto MEMBER_INSERT_OUT;
 	m.update_Name(element);
 
 	cout << "Enter the address : ";
 	cin >> element;
+	if (!element.compare(".")) goto MEMBER_INSERT_OUT;
 	m.update_Address(element);
 
 	cout << "Enter the Phone Number : ";
 	cin >> element;
+	if (!element.compare(".")) goto MEMBER_INSERT_OUT;
 	m.update_PhoneNumber(element);
 
 	cout << "Enter the Mileage: ";
 	cin >> element;
+	if (!element.compare(".")) goto MEMBER_INSERT_OUT;
 	m.update_mileage(element.c_str());
 
-	err = pMM->insert(m);
+	err = pIMM->insert(m);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -184,35 +202,31 @@ void ManagerInterface::member_insert()
 		cout << "Fail!" << endl;
 	}
 
+	MEMBER_INSERT_OUT:
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Member insert---" << endl;
+	cout << "----------------------- Member insert -------------------------" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::member_update()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Member update---" << endl;
+	cout << "----------------------- Member update -------------------------" << endl;
 	cout << "<<Current Member>>" << endl;
 	cout << m;
-	cout << "<<Current Member>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
-	cout << "wanna update?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to update, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::admin_menu);
-		cout << "---Member update---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto MEMBER_UPDATE_OUT;
 	}
 
-	cout << "If you do not wanna change, Press '.' and Enter!" << endl;
+	cout << "If you do not want to change, Press '.' and Enter!" << endl;
 	cout << "Enter the password : ";
 	cin >> element;
 	if(element.compare("."))
@@ -243,7 +257,7 @@ void ManagerInterface::member_update()
 	if (element.compare("."))
 		m.update_mileage(element.c_str());
 
-	err = pMM->update(m);
+	err = pIMM->update(m);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -253,35 +267,31 @@ void ManagerInterface::member_update()
 		cout << "Fail!" << endl;
 	}
 
+MEMBER_UPDATE_OUT:
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Member update---" << endl;
+	cout << "----------------------- Member update -------------------------" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::member_remove()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Member remove---" << endl;
+	cout << "----------------------- Member remove-------------------------" << endl;
 	cout << "<<Current Member>>" << endl;
 	cout << m;
-	cout << "<<Current Member>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
-	cout << "wanna remove?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to remove, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::admin_menu);
-		cout << "---Member remove---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto MEMBER_REMOVE_OUT;
 	}
 
-	err = pMM->remove(m);
+	err = pIMM->remove(m);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -297,40 +307,35 @@ void ManagerInterface::member_remove()
 		cout << "Fail!" << endl;
 	}
 
+	MEMBER_REMOVE_OUT:
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Member update---" << endl;
+	cout << "----------------------- Member remove -------------------------" << endl;
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::member_search()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Member search---" << endl;
-	
-	cout << "wanna search?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	Member source;
+
+	cout << "----------------------- Member search -------------------------" << endl;
+	cout << "If you want to search, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::admin_menu);
-		cout << "---Member search---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto MEMBER_SEARCH_OUT;
 	}
 
-	Member source;
 	cout << "Enter the ID : ";
 	cin >> element;
 	source.update_ID(element);
-	err = pMM->search(source, m);
+	err = pIMM->search(source, m);
 
 	cout << "<<Current Member>>" << endl;
 	cout << m;
-	cout << "<<Current Member>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
 	if (err == RM_valid)
 	{
@@ -341,66 +346,76 @@ void ManagerInterface::member_search()
 		cout << "Fail!" << endl;
 	}
 
+MEMBER_SEARCH_OUT:
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Member search---" << endl;
+	cout << "----------------------- Member search -------------------------" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 
 void ManagerInterface::lecture_retrieve()
 {
 	std::vector<Lecture> list;
-	cout << "---Lecture retrieve---" << endl;
-	pLM->retrieve(list);
+	cout << "----------------------- Lecture retrieve -------------------------" << endl;
+	pILM->retrieve(list);
 	for (int i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Lecture retrieve---" << endl;
+	cout << "----------------------- Lecture retrieve -------------------------" << endl;
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::lecture_insert()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Lecture insert---" << endl;
+	cout << "----------------------- Lecture insert -------------------------" << endl;
+	cout << "if you want to cancel typing member data, press '.' and enter" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
 	cout << "Enter the ID : ";
 	cin >> element;
+	if (!element.compare(".")) goto LECTURE_INSERT_OUT;
 	l.update_lectureid(element);
 
 	cout << "Enter the Subject : ";
 	cin >> element;
+	if (!element.compare(".")) goto LECTURE_INSERT_OUT;
 	l.update_subject(element);
 
 	cout << "Enter the Level : ";
 	cin >> element;
+	if (!element.compare(".")) goto LECTURE_INSERT_OUT;
 	l.update_level(element);
 
 	cout << "Enter the Price : ";
 	cin >> element;
+	if (!element.compare(".")) goto LECTURE_INSERT_OUT;
 	l.update_price(element);
 
 	cout << "Enter the Extension : ";
 	cin >> element;
+	if (!element.compare(".")) goto LECTURE_INSERT_OUT;
 	l.update_extension(element);
 
 	cout << "Enter the DueDate : ";
 	cin >> element;
+	if (!element.compare(".")) goto LECTURE_INSERT_OUT;
 	l.update_duedate(element);
 
 	cout << "Enter the Name of teacher : ";
 	cin >> element;
+	if (!element.compare(".")) goto LECTURE_INSERT_OUT;
 	l.update_nameofteacher(element);
 
 	cout << "Enter the Textbook : ";
 	cin >> element;
+	if (!element.compare(".")) goto LECTURE_INSERT_OUT;
 	l.update_textbook(element);
 
-	err = pLM->insert(l);
+	err = pILM->insert(l);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -410,35 +425,31 @@ void ManagerInterface::lecture_insert()
 		cout << "Fail!" << endl;
 	}
 
+	LECTURE_INSERT_OUT:
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Lecture insert---" << endl;
+	cout << "----------------------- Lecture insert -------------------------" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::lecture_update()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Lecture update---" << endl;
+	cout << "----------------------- Lecture update -------------------------" << endl;
 	cout << "<<Current Lecture>>" << endl;
 	cout << l;
-	cout << "<<Current Lecture>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
-	cout << "wanna update?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to update, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::admin_menu);
-		cout << "---Lecture update---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto LECTURE_UPDATE_OUT;
 	}
 
-	cout << "If you do not wanna change, Press '.' and Enter!" << endl;
+	cout << "If you do not want to change, Press '.' and Enter!" << endl;
 	
 	
 	cout << "Enter the Subject : ";
@@ -476,7 +487,7 @@ void ManagerInterface::lecture_update()
 	if (element.compare("."))
 		l.update_textbook(element);
 
-	err = pLM->update(l);
+	err = pILM->update(l);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -486,35 +497,31 @@ void ManagerInterface::lecture_update()
 		cout << "Fail!" << endl;
 	}
 
+	LECTURE_UPDATE_OUT:
 	nextState(&ManagerInterface::admin_menu);
 	cout << "---Lecture update---" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::lecture_remove()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Lecture remove---" << endl;
-	cout << "<<Current Lecture>>" << endl;
+	cout << "----------------------- Lecture remove-------------------------" << endl;
+	cout << "<<Current Member>>" << endl;
 	cout << l;
-	cout << "<<Current Lecture>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
-	cout << "wanna remove?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to remove, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::admin_menu);
-		cout << "---Lecture remove---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto LECTURE_REMOVE_OUT;
 	}
 
-	err = pLM->remove(l);
+	err = pILM->remove(l);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -530,40 +537,36 @@ void ManagerInterface::lecture_remove()
 		cout << "Fail!" << endl;
 	}
 
+	LECTURE_REMOVE_OUT:
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Lecture update---" << endl;
+	cout << "----------------------- Lecture remove-------------------------" << endl;
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::lecture_search()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Lecture search---" << endl;
+	Lecture source;
+	cout << "----------------------- Lecture search-------------------------" << endl;
 
-	cout << "wanna search?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to search, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::admin_menu);
-		cout << "---Lecture search---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto LECTURE_SEARCH_OUT;
 	}
 
-	Lecture source;
 	cout << "Enter the ID : ";
 	cin >> element;
 	source.update_lectureid(element);
-	err = pLM->search(source, l);
+	err = pILM->search(source, l);
 
 	cout << "<<Current Lecture>>" << endl;
 	cout << l;
-	cout << "<<Current Lecture>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
 	if (err == RM_valid)
 	{
@@ -574,50 +577,40 @@ void ManagerInterface::lecture_search()
 		cout << "Fail!" << endl;
 	}
 
+	LECTURE_SEARCH_OUT:
 	nextState(&ManagerInterface::admin_menu);
 	cout << "---Lecture search---" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 
 void ManagerInterface::purchase_retrieve()
 {
 	std::vector<Purchase> list;
-	cout << "---Purchase retrieve---" << endl;
+	cout << "----------------------- Purchase retrieve -------------------------" << endl;
 	pPM->retrieve(list);
 	for (int i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Purchase retrieve---" << endl;
+	cout << "----------------------- Purchase retrieve -------------------------" << endl;
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::purchase_insert()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Purchase insert---" << endl;
+	cout << "----------------------- Purchase insert -------------------------" << endl;
 	cout << "<<Current Member>>" << endl;
 	cout << m;
 	cout << "<<Current Lecture>>" << endl;
 	cout << l;
+	cout << "---------------------------------------------------------------" << endl;
 	cout << "Purchase Element is made by above member and lecture" << endl;
-	cout << "If you wanna change it, search Member or search Lecture first" << endl;
-	cout << "wanna insert?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
-	{
-		nextState(&ManagerInterface::admin_menu);
-		cout << "---Purchase insert---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
-	}
+	cout << "If you want to change it, search Member or search Lecture first" << endl;
+	cout << "if you want to cancel typing member data, press '.' and enter" << endl;
 
 	p.update_purchaseid("");
 	p.update_lectureid(l.getKey(0));
@@ -625,7 +618,19 @@ void ManagerInterface::purchase_insert()
 	
 	cout << "Enter the Mileage : ";
 	cin >> element;
+	if (!element.compare(".")) goto PURCHASE_INSERT_OUT;
 	p.update_mileage(element.c_str());
+
+	if (pIMM->search(m, m) != RM_valid)
+	{
+		cout << "There is no member in member list!\n" << endl;
+		goto PURCHASE_INSERT_OUT;
+	}
+	if (pILM->search(l, l) != RM_valid)
+	{
+		cout << "There is no member in member list!\n" << endl;
+		goto PURCHASE_INSERT_OUT;
+	}
 
 	err = pPM->insert(p);
 	if (err == RM_valid)
@@ -640,44 +645,44 @@ void ManagerInterface::purchase_insert()
 			cout << "Fail!" << endl;
 	}
 
+	PURCHASE_INSERT_OUT:
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Purchase insert---" << endl;
+	cout << "----------------------- Purchase insert-------------------------" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::purchase_update()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Purchase update---" << endl;
+	cout << "----------------------- Purchase update -------------------------" << endl;
 	cout << "<<Current Member>>" << endl;
 	cout << m;
 	cout << "<<Current Lecture>>" << endl;
 	cout << l;
 	cout << "<<Current Purchase>>" << endl;
 	cout << p;
+	cout << "---------------------------------------------------------------" << endl;
 	cout << "Purchase Element is made by above member and lecture" << endl;
-	cout << "If you wanna change it, search Member or search Lecture first" << endl;
-	cout << "wanna insert?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to change it, search Member or search Lecture first" << endl;
+	cout << "If you want to update, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::admin_menu);
-		cout << "---Purchase update---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto PURCHASE_UPDATE_OUT;
 	}
 
 	p.update_lectureid(l.getKey(0));
 	p.update_memberid(m.getKey(0));
 
+	cout << "If you do not want to change, Press '.' and Enter!" << endl;
 	cout << "Enter the Mileage : ";
 	cin >> element;
-	p.update_mileage(element.c_str());
+	if(element.compare("."))
+		p.update_mileage(element.c_str());
 
 	err = pPM->update(p);
 	if (err == RM_valid)
@@ -692,32 +697,29 @@ void ManagerInterface::purchase_update()
 			cout << "Fail!" << endl;
 	}
 
+PURCHASE_UPDATE_OUT:
+
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Purchase update---" << endl;
+	cout << "----------------------- Purchase update -------------------------" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::purchase_remove()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Purchase remove---" << endl;
+	cout << "----------------------- Purchase remove -------------------------" << endl;
 	cout << "<<Current Purchase>>" << endl;
 	cout << p;
-	cout << "<<Current Purchase>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
-	cout << "wanna remove?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to remove, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::admin_menu);
-		cout << "---Purchase remove---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto PURCHASE_REMOVE_OUT;
 	}
 
 	err = pPM->remove(p);
@@ -736,32 +738,28 @@ void ManagerInterface::purchase_remove()
 		cout << "Fail!" << endl;
 	}
 
+	PURCHASE_REMOVE_OUT:
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Purchase update---" << endl;
+	cout << "----------------------- Purchase remove -------------------------" << endl;
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::purchase_search()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Purchase search---" << endl;
+	Purchase source;
+	cout << "----------------------- Purchase search -------------------------" << endl;
 
-	cout << "wanna search?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to update, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::admin_menu);
-		cout << "---Purchase search---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto PURCHASE_SEARCH_OUT;
 	}
 
-	Purchase source;
 	cout << "Enter the ID : ";
 	cin >> element;
 	source.update_purchaseid(element);
@@ -769,7 +767,7 @@ void ManagerInterface::purchase_search()
 
 	cout << "<<Current Purchase>>" << endl;
 	cout << p;
-	cout << "<<Current Purchase>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
 	if (err == RM_valid)
 	{
@@ -780,47 +778,42 @@ void ManagerInterface::purchase_search()
 		cout << "Fail!" << endl;
 	}
 
+	PURCHASE_SEARCH_OUT:
 	nextState(&ManagerInterface::admin_menu);
-	cout << "---Purchase search---" << endl;
+	cout << "----------------------- Purchase search -------------------------" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 
 void ManagerInterface::member_my_retrieve()
 {
-	cout << "---Member my_retrieve---" << endl;
-	pMM->my_retrieve(m);
+	cout << "----------------------- Member my_retrieve -------------------------" << endl;
+	pIMM->my_retrieve(m);
 	
 	cout << m << endl;
 
 	nextState(&ManagerInterface::normal_menu);
-	cout << "---Member my_retrieve---" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::member_my_update()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Member my_update---" << endl;
+	cout << "----------------------- Member my_update -------------------------" << endl;
 	cout << "<<Current Member>>" << endl;
-	pMM->my_retrieve(m);
+	pIMM->my_retrieve(m);
 	cout << m;
-	cout << "<<Current Member>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
-	cout << "wanna update?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to update, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::normal_menu);
-		cout << "---Member update---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto MEMBER_MY_UPDATE_OUT;
 	}
 
 	cout << "If you do not wanna change, Press '.' and Enter!" << endl;
@@ -854,7 +847,7 @@ void ManagerInterface::member_my_update()
 	if (element.compare("."))
 		m.update_mileage(element.c_str());
 
-	err = pMM->my_update(m);
+	err = pIMM->my_update(m);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -864,36 +857,32 @@ void ManagerInterface::member_my_update()
 		cout << "Fail!" << endl;
 	}
 
+MEMBER_MY_UPDATE_OUT:
 	nextState(&ManagerInterface::normal_menu);
 	cout << "---Member my_update---" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::member_my_remove()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Member remove---" << endl;
+	cout << "----------------------- Member my_remove -------------------------" << endl;
 	cout << "<<Current Member>>" << endl;
-	pMM->my_retrieve(m);
+	pIMM->my_retrieve(m);
 	cout << m;
-	cout << "<<Current Member>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
-	cout << "wanna remove?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to remove, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::normal_menu);
-		cout << "---Member remove---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto MEMBER_MY_REMOVE_OUT;
 	}
 
-	err = pMM->my_remove();
+	err = pIMM->my_remove();
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -909,54 +898,48 @@ void ManagerInterface::member_my_remove()
 		cout << "Fail!" << endl;
 	}
 
+	MEMBER_MY_REMOVE_OUT:
 	nextState(&ManagerInterface::normal_menu);
 	cout << "---Member update---" << endl;
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::lecture_my_retrieve()
 {
 	std::vector<Lecture> list;
-	cout << "---Lecture my_retrieve---" << endl;
-	pLM->retrieve(list);
+	cout << "----------------------- Lecture my_retrieve -------------------------" << endl;
+	pILM->retrieve(list);
 	for (int i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
 	nextState(&ManagerInterface::normal_menu);
-	cout << "---Lecture my_retrieve---" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::lecture_my_search()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Lecture my_search---" << endl;
+	Lecture source;
+	cout << "----------------------- Lecture my_search -------------------------" << endl;
 
-	cout << "wanna search?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to search, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::normal_menu);
-		cout << "---Lecture search---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto LECTURE_MY_RETRIEVE_OUT;
 	}
 
-	Lecture source;
 	cout << "Enter the ID : ";
 	cin >> element;
 	source.update_lectureid(element);
-	err = pLM->search(source, l);
+	err = pILM->search(source, l);
 
 	cout << "<<Current Lecture>>" << endl;
 	cout << l;
-	cout << "<<Current Lecture>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
 	if (err == RM_valid)
 	{
@@ -967,51 +950,58 @@ void ManagerInterface::lecture_my_search()
 		cout << "Fail!" << endl;
 	}
 
+	LECTURE_MY_RETRIEVE_OUT:
 	nextState(&ManagerInterface::normal_menu);
-	cout << "---Lecture search---" << endl;
+	cout << "----------------------- Lecture my_search -------------------------" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::purchase_my_retrieve()
 {
 	std::vector<Purchase> list;
 	Member m;
-	cout << "---Purchase retrieve---" << endl;
-	pMM->my_retrieve(m);
+	cout << "----------------------- Purchase my_retrieve -------------------------" << endl;
+	pIMM->my_retrieve(m);
 	pPM->my_retrieve(m, list);
 	for (int i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
 	nextState(&ManagerInterface::normal_menu);
-	cout << "---Purchase retrieve---" << endl;
+	cout << "----------------------- Purchase my_retrieve -------------------------" << endl;
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::purchase_my_insert()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Purchase insert---" << endl;
+	cout << "----------------------- Purchase my_insert -------------------------" << endl;
 	cout << "<<Current Member>>" << endl;
-	pMM->my_retrieve(m);
+	pIMM->my_retrieve(m);
 	cout << m;
 	cout << "<<Current Lecture>>" << endl;
 	cout << l;
 	cout << "Purchase Element is made by above member and lecture" << endl;
 	cout << "If you wanna change it, search Member or search Lecture first" << endl;
-	cout << "wanna insert?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to update, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::normal_menu);
-		cout << "---Purchase insert---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto MEMBER_MY_INSERT_OUT;
+	}
+
+	if (pIMM->search(m, m) != RM_valid)
+	{
+		cout << "There is no member in member list!\n" << endl;
+		goto MEMBER_MY_INSERT_OUT;
+	}
+	if (pILM->search(l, l) != RM_valid)
+	{
+		cout << "There is no member in member list!\n" << endl;
+		goto MEMBER_MY_INSERT_OUT;
 	}
 
 	p.update_purchaseid("");
@@ -1035,19 +1025,20 @@ void ManagerInterface::purchase_my_insert()
 			cout << "Fail!" << endl;
 	}
 
+	MEMBER_MY_INSERT_OUT:
 	nextState(&ManagerInterface::normal_menu);
-	cout << "---Purchase insert---" << endl;
+	cout << "----------------------- Purchase my_insert -------------------------" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::purchase_my_update()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Purchase my_update---" << endl;
+	cout << "----------------------- Purchase my_update -------------------------" << endl;
 	cout << "<<Current Member>>" << endl;
-	pMM->my_retrieve(m);
+	pIMM->my_retrieve(m);
 	cout << m;
 	cout << "<<Current Lecture>>" << endl;
 	cout << l;
@@ -1055,17 +1046,13 @@ void ManagerInterface::purchase_my_update()
 	cout << p;
 	cout << "Purchase Element is made by above member and lecture" << endl;
 	cout << "If you wanna change it, search Member or search Lecture first" << endl;
-	cout << "wanna insert?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to insert, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::normal_menu);
-		cout << "---Purchase update---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto PURCHASE_MY_UPDATE_OUT;
 	}
 
 	p.update_lectureid(l.getKey(0));
@@ -1088,34 +1075,30 @@ void ManagerInterface::purchase_my_update()
 			cout << "Fail!" << endl;
 	}
 
+	PURCHASE_MY_UPDATE_OUT:
 	nextState(&ManagerInterface::normal_menu);
-	cout << "---Purchase update---" << endl;
+	cout << "----------------------- Purchase my_update -------------------------" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::purchase_my_remove()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Purchase remove---" << endl;
+	cout << "----------------------- Purchase my_remove -------------------------" << endl;
 	cout << "<<Current Purchase>>" << endl;
 	cout << p;
-	cout << "<<Current Purchase>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
-	cout << "wanna remove?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
-	if (dat == '0')
+	cout << "If you want to update, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+	char dat = getchar();
+	if (dat == '.')
 	{
-		nextState(&ManagerInterface::normal_menu);
-		cout << "---Purchase remove---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto PURCHASE_MY_REMOVE_OUT;
 	}
-	pMM->my_retrieve(m);
+	pIMM->my_retrieve(m);
 	err = pPM->my_remove(m, p);
 	if (err == RM_valid)
 	{
@@ -1132,45 +1115,40 @@ void ManagerInterface::purchase_my_remove()
 		cout << "Fail!" << endl;
 	}
 
+	PURCHASE_MY_REMOVE_OUT:
 	nextState(&ManagerInterface::normal_menu);
-	cout << "---Purchase update---" << endl;
+	cout << "----------------------- Purchase my_remove -------------------------" << endl;
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 void ManagerInterface::purchase_my_search()
 {
 	RM_errcode err;
 	std::string element;
-	cout << "---Purchase search---" << endl;
+	Purchase source;
+	cout << "----------------------- Purchase my_search -------------------------" << endl;
 
 	cout << "<<Current Member>>" << endl;
-	pMM->my_retrieve(m);
+	pIMM->my_retrieve(m);
 	cout << m;
 	cout << "<<Current Lecture>>" << endl;
 	cout << l;
 
 	cout << "We find the purchase  element using above member and lecture" << endl;
-	cout << "wanna search?" << endl << " if not, press '0'. or press any else  " << endl;
-	char dat;
-	cin >> dat;
+	cout << "If you want to search, press any button" << endl;
+	cout << "if you want to quit, press '.' button" << endl;
+	char dat = getchar();
 	if (dat == '0')
 	{
-		nextState(&ManagerInterface::normal_menu);
-		cout << "---Purchase search---" << endl;
-		cout << "Press the Button" << endl;
-		getchar();
-		getchar();
-		return;
+		goto PURCHASE_MY_SERACH_OUT;
 	}
 
-	Purchase source;
-	pMM->my_retrieve(m);
+	pIMM->my_retrieve(m);
 	err = pPM->my_search(m, l, p);
 
 	cout << "<<Current Purchase>>" << endl;
 	cout << p;
-	cout << "<<Current Purchase>>" << endl;
+	cout << "---------------------------------------------------------------" << endl;
 
 	if (err == RM_valid)
 	{
@@ -1181,10 +1159,11 @@ void ManagerInterface::purchase_my_search()
 		cout << "Fail!" << endl;
 	}
 
+	PURCHASE_MY_SERACH_OUT:
 	nextState(&ManagerInterface::normal_menu);
 	cout << "---Purchase search---" << endl;
+	flush();
 	cout << "Press the Button" << endl;
-	getchar();
 	getchar();
 }
 
@@ -1444,32 +1423,28 @@ void ManagerInterface::memberindex_search()
 
 void ManagerInterface::play()
 {
-	RecordFile <Member>* Memberfile = new RecordFile<Member>(DelimFieldBuffer('|', STDMAXBUF));
-	pMM = new MemberManager("fileOfMember.dat", Memberfile);
-
-	RecordFile <Lecture>* Lecturefile = new RecordFile<Lecture>(DelimFieldBuffer('|', STDMAXBUF));
-	pLM = new LectureManager("fileOfLecture.dat", Lecturefile);
-
 	RecordFile <Purchase>* Purchasefile = new RecordFile<Purchase>(DelimFieldBuffer('|', STDMAXBUF));
 	pPM = new PurchaseManager("fileOfPurchase.dat", Purchasefile);
 
-	
 	TextIndexedFile <Member>* MemberIndexfile = new TextIndexedFile<Member>(DelimFieldBuffer('|', STDMAXBUF), 16);
 	MemberIndexfile->initilaize("fileOfMember");
 	pIMM = new MemberIndexManager("fileOfMember", MemberIndexfile);
+
+	TextIndexedFile <Lecture>* LectureIndexfile = new TextIndexedFile<Lecture>(DelimFieldBuffer('|', STDMAXBUF), 16);
+	MemberIndexfile->initilaize("fileOfLecture");
+	pILM = new LectureIndexManager("fileOfLecture", LectureIndexfile);
 	
-	pMM->setPurchaseManager(*pPM);
-	pLM->setPurchaseManager(*pPM);
+	pIMM->setPurchaseManager(*pPM);
+	pILM->setPurchaseManager(*pPM);
 
 	while (!end)
 	{
 		(this->*state)();
 	}
 
-	delete Memberfile;
-	delete Lecturefile;
+	delete MemberIndexfile;
+	delete LectureIndexfile;
 	delete Purchasefile;
 	delete pPM;
-	delete pMM;
-	delete pLM;
+
 }

@@ -169,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="fileOfLecture.dat" />
+    <None Include="fileOfLecture.ind" />
     <None Include="fileOfMember.dat" />
     <None Include="fileOfMember.ind" />
     <None Include="fileOfPurchase.dat" />

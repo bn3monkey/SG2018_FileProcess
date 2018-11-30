@@ -61,8 +61,8 @@ void TextIndexedFile<RecType>::initilaize(char* filename)
 	std::string dataFilename = std::string(filename) + ".dat"; 
 	std::string indexFilename = std::string(filename) + ".ind";
 	
-	//if (!file_exist(indexFilename.c_str()))
-	//{
+	if (!file_exist(indexFilename.c_str()))
+	{
 		DataFile.Open((char *)dataFilename.c_str(), ios::in);
 		while (1) {		// 학생 데이터를 읽어서 인덱스를 생성
 			RecType s;
@@ -80,7 +80,7 @@ void TextIndexedFile<RecType>::initilaize(char* filename)
 		IndexBuffer.Pack(RecTypeIndex);
 		int result = IndexFile.Write();
 		IndexFile.Close();
-	//}
+	}
 }
 
 // template method bodies

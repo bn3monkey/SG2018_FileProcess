@@ -1,15 +1,13 @@
 #pragma once
-#include "LectureManager.hpp"
-#include "MemberManager.hpp"
 #include "MemberIndexManager.hpp"
+#include "LectureIndexManager.hpp"
 
 class ManagerInterface
 {
 private:
-	MemberManager* pMM;
-	LectureManager* pLM;
 	PurchaseManager* pPM;
 	MemberIndexManager* pIMM;
+	LectureIndexManager* pILM;
 
 	//검색된 것들을 보관하는 공간
 	Member m;

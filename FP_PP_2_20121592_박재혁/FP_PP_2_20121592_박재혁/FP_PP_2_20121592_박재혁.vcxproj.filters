@@ -204,5 +204,8 @@
     <None Include="fileOfPurchase.dat">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="fileOfLecture.ind">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
 </Project>
