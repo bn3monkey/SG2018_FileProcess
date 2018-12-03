@@ -1,0 +1,15 @@
+14
+TestUser|T1234|9|Han JiWoo|010-1357-9753|Taecho|0000000013
+admin|adminpass|1|Admit?|010-8282-1234|Mapho|0000000014
+TestTestTestTest|TestTestTestTest|9|TestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTestTest|010-1234-5628|PyungCheong|0000000012
+Bulbasaur|Bulbasaur1234|9|Bulbasaur Bulbasaur|010-1234-5678|Seoul|0000000001
+Ivysaur|Ivysaur1234|9|Ivysaur Ivysaur|010-1235-5678|Pusan|0000000002
+Venusaur|Venusaur1234|9|Venusaur Venusaur|010-1634-5678|Daegu|0000000003
+Charmander|Charmander1234|9|Charmander Charmander|010-2234-5678|Daejeon|0000000004
+Charmeleon|Charmeleon1234|9|Charmeleon Charmeleon|010-1334-5678|Ulsan|0000000005
+Charizard|Charizard1234|9|Charizard Charizard|010-1234-5578|Gwangju|0000000006
+Squirtle|Squirtle1234|9|Squirtle Squirtle|010-1234-5668|Incheon|0000000007
+Wartortle|Wartortle1234|9|Wartortle Wartortle|010-1234-5778|Gangreung|0000000008
+Blastoise|Blastoise1234|9|Blastoise Blastoise|010-1234-5978|Yeosu|0000000009
+Caterpie|Caterpie1234|9|Caterpie Caterpie|010-1234-5638|Jinhae|0000000010
+Metapod|Metapod1234|9|Metapod Metapod|010-1234-5628|PyungCheong|0000000011

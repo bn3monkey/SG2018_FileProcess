@@ -18,7 +18,7 @@ void ManagerInterface::login()
 		cin >> id;
 		if (!id.compare("."))
 		{
-			end = -1;
+			end = true;
 			return;
 		}
 		/*
@@ -44,8 +44,6 @@ void ManagerInterface::login()
 
 void ManagerInterface::admin_menu()
 {
-	RM_errcode err;
-
 	while (true)
 	{
 		int menu;
@@ -95,8 +93,6 @@ void ManagerInterface::admin_menu()
 }
 void ManagerInterface::normal_menu()
 {
-	RM_errcode err;
-
 	while (true)
 	{
 		int menu;
@@ -140,7 +136,7 @@ void ManagerInterface::member_retrieve()
 	std::vector<Member> list;
 	cout << "----------------------- Member retrieve -------------------------" << endl;
 	pIMM->retrieve(list);
-	for (int i = 0; i < list.size(); ++i)
+	for (size_t i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
 	nextState(&ManagerInterface::admin_menu);
@@ -359,7 +355,7 @@ void ManagerInterface::lecture_retrieve()
 	std::vector<Lecture> list;
 	cout << "----------------------- Lecture retrieve -------------------------" << endl;
 	pILM->retrieve(list);
-	for (int i = 0; i < list.size(); ++i)
+	for (size_t i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
 	nextState(&ManagerInterface::admin_menu);
@@ -590,7 +586,7 @@ void ManagerInterface::purchase_retrieve()
 	std::vector<Purchase> list;
 	cout << "----------------------- Purchase retrieve -------------------------" << endl;
 	pPM->retrieve(list);
-	for (int i = 0; i < list.size(); ++i)
+	for (size_t i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
 	nextState(&ManagerInterface::admin_menu);
@@ -909,7 +905,7 @@ void ManagerInterface::lecture_my_retrieve()
 	std::vector<Lecture> list;
 	cout << "----------------------- Lecture my_retrieve -------------------------" << endl;
 	pILM->retrieve(list);
-	for (int i = 0; i < list.size(); ++i)
+	for (size_t i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
 	nextState(&ManagerInterface::normal_menu);
@@ -964,7 +960,7 @@ void ManagerInterface::purchase_my_retrieve()
 	cout << "----------------------- Purchase my_retrieve -------------------------" << endl;
 	pIMM->my_retrieve(m);
 	pPM->my_retrieve(m, list);
-	for (int i = 0; i < list.size(); ++i)
+	for (size_t i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
 	nextState(&ManagerInterface::normal_menu);
@@ -1202,7 +1198,7 @@ void ManagerInterface::memberindex_retrieve()
 	std::vector<Member> list;
 	cout << "---Member retrieve---" << endl;
 	pIMM->retrieve(list);
-	for (int i = 0; i < list.size(); ++i)
+	for (size_t i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
 	nextState(&ManagerInterface::index_menu);

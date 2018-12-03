@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\BasicClass">
+      <UniqueIdentifier>{43bba405-0daf-4f9b-a6ef-eabd3cbef994}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\BufferClass">
+      <UniqueIdentifier>{bb3e6065-d95e-441b-964c-e066fe6934d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ShellClass">
+      <UniqueIdentifier>{60829829-da47-4a39-8242-147094f32366}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\RecordManagerClass">
+      <UniqueIdentifier>{0d172551-2480-4ec8-a647-fc0e1c8f3d3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\FixedBufferClass">
+      <UniqueIdentifier>{d15e9694-38e4-4099-9839-0e93eca8fb53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\BTreeClass">
+      <UniqueIdentifier>{8cf8eb1c-5cd5-4ecb-8e37-6a7d2fbc76ce}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Scheme.hpp">
+      <Filter>소스 파일\BasicClass</Filter>
+    </ClInclude>
+    <ClInclude Include="buffile.h">
+      <Filter>소스 파일\BufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="delim.h">
+      <Filter>소스 파일\BufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="iobuffer.h">
+      <Filter>소스 파일\BufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="recfile.h">
+      <Filter>소스 파일\BufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="varlen.h">
+      <Filter>소스 파일\BufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Member.hpp">
+      <Filter>소스 파일\BasicClass</Filter>
+    </ClInclude>
+    <ClInclude Include="shell.hpp">
+      <Filter>소스 파일\ShellClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Purchase.hpp">
+      <Filter>소스 파일\BasicClass</Filter>
+    </ClInclude>
+    <ClInclude Include="Lecture.hpp">
+      <Filter>소스 파일\BasicClass</Filter>
+    </ClInclude>
+    <ClInclude Include="SchemeList.hpp">
+      <Filter>소스 파일\BasicClass</Filter>
+    </ClInclude>
+    <ClInclude Include="recordform.hpp">
+      <Filter>소스 파일\BufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="MemberManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="BasicClassHeader.h">
+      <Filter>소스 파일\BasicClass</Filter>
+    </ClInclude>
+    <ClInclude Include="RecordManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="ManagerClassHeader.h">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="LectureManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="PurchaseManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="interface.h">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="fixfld.h">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="fixlen.h">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="indfile.h">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="textind.h">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="tindbuff.h">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClInclude>
+    <ClInclude Include="LectureIndexManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="MemberIndexManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="btnode.h">
+      <Filter>소스 파일\BTreeClass</Filter>
+    </ClInclude>
+    <ClInclude Include="btree.h">
+      <Filter>소스 파일\BTreeClass</Filter>
+    </ClInclude>
+    <ClInclude Include="indbuff.h">
+      <Filter>소스 파일\BTreeClass</Filter>
+    </ClInclude>
+    <ClInclude Include="indnode.h">
+      <Filter>소스 파일\BTreeClass</Filter>
+    </ClInclude>
+    <ClInclude Include="simpind.h">
+      <Filter>소스 파일\BTreeClass</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="buffile.cpp">
+      <Filter>소스 파일\BufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="delim.cpp">
+      <Filter>소스 파일\BufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="iobuffer.cpp">
+      <Filter>소스 파일\BufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="varlen.cpp">
+      <Filter>소스 파일\BufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Member.cpp">
+      <Filter>소스 파일\BasicClass</Filter>
+    </ClCompile>
+    <ClCompile Include="shell.cpp">
+      <Filter>소스 파일\ShellClass</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일\ShellClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Lecture.cpp">
+      <Filter>소스 파일\BasicClass</Filter>
+    </ClCompile>
+    <ClCompile Include="Purchase.cpp">
+      <Filter>소스 파일\BasicClass</Filter>
+    </ClCompile>
+    <ClCompile Include="recordform.cpp">
+      <Filter>소스 파일\BufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="MemberManager.cpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClCompile>
+    <ClCompile Include="LectureManager.cpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClCompile>
+    <ClCompile Include="PurchaseManager.cpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClCompile>
+    <ClCompile Include="TestModule.cpp">
+      <Filter>소스 파일\ShellClass</Filter>
+    </ClCompile>
+    <ClCompile Include="interface.cpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClCompile>
+    <ClCompile Include="fixfld.cpp">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="fixlen.cpp">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="textind.cpp">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="tindbuff.cpp">
+      <Filter>소스 파일\FixedBufferClass</Filter>
+    </ClCompile>
+    <ClCompile Include="LectureIndexManager.cpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClCompile>
+    <ClCompile Include="MemberIndexManager.cpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClCompile>
+    <ClCompile Include="tstbtree.cpp">
+      <Filter>소스 파일\ShellClass</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="listOfMember.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="listOfLecture.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="listOfPurchase.txt">
+      <Filter>리소스 파일</Filter>
+    </Text>
+    <Text Include="test_code.txt">
+      <Filter>소스 파일\ShellClass</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fileOfMember.ind">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="fileOfLecture.dat">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="fileOfMember.dat">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="fileOfPurchase.dat">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="fileOfLecture.ind">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="testbt.dat">
+      <Filter>리소스 파일</Filter>
+    </None>
+  </ItemGroup>
+</Project>
