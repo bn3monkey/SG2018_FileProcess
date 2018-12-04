@@ -87,9 +87,18 @@ int BTree<keyType>::Open(char * name, int mode)
 	int result;
 	result = BTreeFile.Open(name, mode);
 	if (!result) return result;
+	
+	result = BTreeFile.Rewind();
+	if (!result) return result;
+
+	keyType dummy = keyType();
+	BTreeNode<keyType> height_node(1);
+	result = BTreeFile.Read(height_node);
+	if (result == -1) return 0;
+	Height = height_node.RecAddrs[0];
+
 	// load root
 	BTreeFile.Read(Root);
-	Height = 1; // find height from BTreeFile!
 	return 1;
 }
 
@@ -99,6 +108,16 @@ int BTree<keyType>::Create(char * name, int mode)
 	int result;
 	result = BTreeFile.Create(name, mode);
 	if (!result) return result;
+
+	result = BTreeFile.Rewind();
+	if (!result) return result;
+
+	keyType dummy = keyType();
+	BTreeNode<keyType> height_node(1);
+	height_node.Insert(dummy, Height);
+	result = BTreeFile.Write(height_node);
+	if (result == -1) return 0;
+
 	// append root node
 	result = BTreeFile.Write(Root);
 	Root.RecAddr = result;
@@ -111,6 +130,13 @@ int BTree<keyType>::Close()
 	int result;
 	result = BTreeFile.Rewind();
 	if (!result) return result;
+	
+	keyType dummy = keyType();
+	BTreeNode<keyType> height_node(1);
+	height_node.Insert(dummy, Height);
+	result = BTreeFile.Write(height_node);
+	if (result == -1) return 0;
+
 	result = BTreeFile.Write(Root);
 	if (result == -1) return 0;
 	return BTreeFile.Close();
@@ -373,7 +399,8 @@ BTreeNode<keyType> * BTree<keyType>::Fetch(const int recaddr)
 	int result;
 	BTNode * newNode = new BTNode(Order);
 	result = BTreeFile.Read(*newNode, recaddr);
-	if (result == -1) return NULL;
+	if (result == -1) 
+		return NULL;
 	newNode->RecAddr = result;
 	return newNode;
 }

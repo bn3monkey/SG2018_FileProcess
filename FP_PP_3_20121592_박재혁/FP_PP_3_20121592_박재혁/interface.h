@@ -1,11 +1,12 @@
 #pragma once
 #include "MemberIndexManager.hpp"
 #include "LectureIndexManager.hpp"
+#include "PurchaseBTreeManager.hpp"
 
 class ManagerInterface
 {
 private:
-	PurchaseManager* pPM;
+	PurchaseBTreeManager* pBPM;
 	MemberIndexManager* pIMM;
 	LectureIndexManager* pILM;
 

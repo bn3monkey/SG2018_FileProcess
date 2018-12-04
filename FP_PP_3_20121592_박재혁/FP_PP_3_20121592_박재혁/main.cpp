@@ -13,6 +13,7 @@ int main()
 		cout << "5. LectureTest" << endl;
 		cout << "6. PurchaseTest" << endl;
 		cout << "7. LecturePurchaseSystem" << endl;
+		cout << "8. Data Reset" << endl;
 		cout << "0. Program End" << endl;
 
 		cin >> prog_num;

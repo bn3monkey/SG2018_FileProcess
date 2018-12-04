@@ -1,6 +1,6 @@
 #pragma once
 #include "recfile.h"
-#include "tindbuff.h"
+#include "btree.h"
 #include <sstream>
 #include <string>
 // template class to support direct read and write of records
@@ -8,9 +8,9 @@
 //	int Pack (BufferType &); pack record into buffer
 //	int Unpack (BufferType &); unpack record from buffer
 
-#define LENID 16
+//#define LENID 16
 template <class RecType>
-class TextIndexedFile
+class BTreeFile
 {
 public:
 	void initialize(char* filename, bool reset);
@@ -27,20 +27,23 @@ public:
 	int Create(char * name, int mode = ios::in | ios::out);
 	int Open(char * name, int mode = ios::in | ios::out);
 	int Close();
-	TextIndexedFile(IOBuffer & buffer,
-		int keySize, int maxKeys = 100);
-	~TextIndexedFile(); // close and delete
+
+	void Print(ostream &);
+
+	BTreeFile(IOBuffer & buffer,
+		int keySize, int order);
+	~BTreeFile(); // close and delete
 protected:
-	TextIndex Index;
-	BufferFile IndexFile;
-	TextIndexBuffer IndexBuffer;
+	bool file_exist(const char* filename);
+	BTree<char> IndexFile;
 	RecordFile<RecType> DataFile;
 	char * FileName; // base file name for file
 	int SetFileName(char * fileName,
 		char *& dataFileName, char *& indexFileName);
 };
 
-inline bool file_exist(const char* filename)
+template <class RecType>
+bool BTreeFile<RecType>::file_exist(const char* filename)
 {
 	ifstream f(filename);
 	if (f.good()) {
@@ -54,109 +57,108 @@ inline bool file_exist(const char* filename)
 }
 
 template <class RecType>
-void TextIndexedFile<RecType>::initialize(char* filename, bool reset)
+void BTreeFile<RecType>::initialize(char* filename, bool reset)
 {
-	TextIndex RecTypeIndex(100);
-
-	std::string dataFilename = std::string(filename) + ".dat"; 
+	std::string dataFilename = std::string(filename) + ".dat";
 	std::string indexFilename = std::string(filename) + ".ind";
-	
+
 	if (reset || !file_exist(indexFilename.c_str()))
 	{
 		DataFile.Open((char *)dataFilename.c_str(), ios::in);
+		IndexFile.Create((char *)indexFilename.c_str(), ios::out | ios::trunc);
+
 		while (1) {		// 학생 데이터를 읽어서 인덱스를 생성
 			RecType s;
 			int recaddr = DataFile.Read(s);
 			if (recaddr == -1) break;
-			//Todo...
-			RecTypeIndex.Insert(s.getKey(), recaddr);
-			//cout << recaddr << '\n' << s;
+			IndexFile.Insert(s.Key()[0], recaddr);
 		}
-		DataFile.Close();
-
-		IndexFile.Create((char *)indexFilename.c_str(), ios::out | ios::trunc);
-		IndexFile.Rewind(); //헤더 다음의 첫번째 레코드 위치로 이동
-							 //Todo...
-		IndexBuffer.Pack(RecTypeIndex);
-		int result = IndexFile.Write();
-		IndexFile.Close();
 	}
+	else
+	{
+		IndexFile.Open((char *)indexFilename.c_str(), ios::in | ios::out);
+	}
+	IndexFile.Print(std::cout);
+	DataFile.Close();
+	IndexFile.Close();
 }
 
 // template method bodies
 template <class RecType>
-int TextIndexedFile<RecType>::Read(RecType & record)
+int BTreeFile<RecType>::Read(RecType & record)
 {
 	return DataFile.Read(record, -1);
 }
 
 template <class RecType>
-int TextIndexedFile<RecType>::Read(char * key, RecType & record)
+int BTreeFile<RecType>::Read(char * key, RecType & record)
 {
-	int ref = Index.Search(key);
+	int ref = IndexFile.Search(key[0]);
 	if (ref < 0) return -1;
 	int result = DataFile.Read(record, ref);
 	return result;
 }
 
 template <class RecType>
-int TextIndexedFile<RecType>::Append(RecType & record)
+int BTreeFile<RecType>::Append(RecType & record)
 {
 	char * key = record.Key();
 	int ref = Index.Search(key);
 	if (ref != -1) // key already in file
 		return -1;
 	ref = DataFile.Append(record);
-	int result = Index.Insert(record.Key(), ref);
+	int result = IndexFile.Insert(record.Key()[0], ref);
 	return ref;
 }
 
 template <class RecType>
-int TextIndexedFile<RecType>::Insert(const RecType& record)
+int BTreeFile<RecType>::Insert(const RecType& record)
 {
 	int ref;
 	ref = DataFile.Insert(record);
-	ref = Index.Insert(record.Key(), ref);
+	ref = IndexFile.Insert(record.Key()[0], ref);
 	return ref;
 }
 
 template <class RecType>
-int TextIndexedFile<RecType>::Remove(RecType& record)
+int BTreeFile<RecType>::Remove(RecType& record)
 {
-	return this->Remove(record.getKey());
+	return this->Remove((char *)record.Key());
 }
 
 template <class RecType>
-int TextIndexedFile<RecType>::Remove(char* key)
+int BTreeFile<RecType>::Remove(char* key)
 {
-	int ref = Index.Search(key);
+	int ref = IndexFile.Search(key[0]);
 	if (ref == -1) // key already in file
 		return -1;
-	Index.Remove(key);
+	IndexFile.Remove(key[0]);
 	RecType record;
 	ref = DataFile.Remove(record, ref);
 	return ref;
 }
 
+
+
 template <class RecType>
-int TextIndexedFile<RecType>::Update
+int BTreeFile<RecType>::Update
 (char * oldKey, RecType & record)
 // Update is left as an exercise. 
 //	It requires BufferFile::Update, and BufferFile::Delete
 {
 	int ref;
-	if (strcmp(oldKey, record.getKey()))
+	if (strcmp(oldKey, record.Key()))
 		return -1;
 	if (Remove(oldKey) == -1)
 		return -1;
 	ref = DataFile.Insert(record);
-	ref = Index.Insert(record.Key(), ref);
+	ref = IndexFile.Insert(record.Key()[0], ref);
 	return ref;
 }
 
 
 template <class RecType>
-int TextIndexedFile<RecType>::SetFileName(char * fileName,
+int BTreeFile<RecType>::SetFileName(char * fileName,
 	char *& dataFileName, char *& indexFileName)
 	// generate names for the data file and the index file
 {
@@ -174,7 +176,7 @@ int TextIndexedFile<RecType>::SetFileName(char * fileName,
 }
 
 template <class RecType>
-int TextIndexedFile<RecType>::Create(char * fileName, int mode)
+int BTreeFile<RecType>::Create(char * fileName, int mode)
 // use fileName.dat and fileName.ind
 {
 	int result;
@@ -200,13 +202,14 @@ int TextIndexedFile<RecType>::Create(char * fileName, int mode)
 	return 1;
 }
 template <class RecType>
-int TextIndexedFile<RecType>::Open(char * fileName, int mode)
+int BTreeFile<RecType>::Open(char * fileName, int mode)
 // open data and index file and read index file
 {
 	int result;
 	char * dataFileName, *indexFileName;
 	result = SetFileName(fileName, dataFileName, indexFileName);
-	if (!result) return 0;
+	if (!result)
+		return 0;
 	// open files
 	result = DataFile.Open(dataFileName, mode);
 	if (!result)
@@ -221,46 +224,35 @@ int TextIndexedFile<RecType>::Open(char * fileName, int mode)
 		FileName = 0; // remove connection
 		return 0;
 	}
-	// read index into memory
-	result = IndexFile.Read();
-	if (result != -1)
-	{
-		result = IndexBuffer.Unpack(Index);
-		if (result != -1) return 1;
-	}
-	// read or unpack failed!
-	DataFile.Close();
-	IndexFile.Close();
-	FileName = 0;
-	return 0;
+	return 1;
 }
 
 template <class RecType>
-int TextIndexedFile<RecType>::Close()
+int BTreeFile<RecType>::Close()
 {
-	int result;
 	if (!FileName) return 0; // already closed!
 	DataFile.Close();
-	IndexFile.Rewind();
-	IndexBuffer.Pack(Index);
-	result = IndexFile.Write();
-	//	cout <<"result of index write: "<<result<<endl;
 	IndexFile.Close();
 	FileName = 0;
 	return 1;
 }
 
 template <class RecType>
-TextIndexedFile<RecType>::TextIndexedFile(IOBuffer & buffer,
-	int keySize, int maxKeys)
-	:DataFile(buffer), Index(maxKeys),
-	IndexFile(IndexBuffer), IndexBuffer(keySize, maxKeys)
+void BTreeFile<RecType>::Print(ostream &stream)
+{
+	IndexFile.Print(stream);
+}
+
+template <class RecType>
+BTreeFile<RecType>::BTreeFile(IOBuffer & buffer,
+	int keySize, int order)
+	: DataFile(buffer), IndexFile(order, keySize)
 {
 	FileName = 0;
 }
 
 template <class RecType>
-TextIndexedFile<RecType>::~TextIndexedFile()
+BTreeFile<RecType>::~BTreeFile()
 {
 	Close();
 }

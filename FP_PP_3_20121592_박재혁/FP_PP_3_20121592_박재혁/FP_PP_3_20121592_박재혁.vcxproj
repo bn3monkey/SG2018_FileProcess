@@ -114,6 +114,7 @@
     <ClInclude Include="BasicClassHeader.h" />
     <ClInclude Include="btnode.h" />
     <ClInclude Include="btree.h" />
+    <ClInclude Include="btreefile.h" />
     <ClInclude Include="buffile.h" />
     <ClInclude Include="fixfld.h" />
     <ClInclude Include="fixlen.h" />
@@ -121,10 +122,12 @@
     <ClInclude Include="indfile.h" />
     <ClInclude Include="indnode.h" />
     <ClInclude Include="interface.h" />
+    <ClInclude Include="InversedIndex.hpp" />
     <ClInclude Include="LectureIndexManager.hpp" />
     <ClInclude Include="LectureManager.hpp" />
     <ClInclude Include="MemberIndexManager.hpp" />
     <ClInclude Include="MemberManager.hpp" />
+    <ClInclude Include="PurchaseBTreeManager.hpp" />
     <ClInclude Include="PurchaseManager.hpp" />
     <ClInclude Include="recordform.hpp" />
     <ClInclude Include="delim.h" />
@@ -154,7 +157,6 @@
     <ClCompile Include="LectureIndexManager.cpp" />
     <ClCompile Include="LectureManager.cpp" />
     <ClCompile Include="main.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -163,6 +165,7 @@
     <ClCompile Include="MemberIndexManager.cpp" />
     <ClCompile Include="MemberManager.cpp" />
     <ClCompile Include="Purchase.cpp" />
+    <ClCompile Include="PurchaseBTreeManager.cpp" />
     <ClCompile Include="PurchaseManager.cpp" />
     <ClCompile Include="recordform.cpp" />
     <ClCompile Include="shell.cpp" />
@@ -171,7 +174,7 @@
     <ClCompile Include="tindbuff.cpp" />
     <ClCompile Include="tstbtree.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="varlen.cpp" />
@@ -188,6 +191,7 @@
     <None Include="fileOfMember.dat" />
     <None Include="fileOfMember.ind" />
     <None Include="fileOfPurchase.dat" />
+    <None Include="fileOfPurchase.ind" />
     <None Include="testbt.dat" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

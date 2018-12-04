@@ -31,6 +31,9 @@
     <Filter Include="소스 파일\BTreeClass">
       <UniqueIdentifier>{8cf8eb1c-5cd5-4ecb-8e37-6a7d2fbc76ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\InversedIndexClass">
+      <UniqueIdentifier>{2f75edce-ba07-4b16-8031-ce8da1e2553a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scheme.hpp">
@@ -126,6 +129,15 @@
     <ClInclude Include="simpind.h">
       <Filter>소스 파일\BTreeClass</Filter>
     </ClInclude>
+    <ClInclude Include="btreefile.h">
+      <Filter>소스 파일\BTreeClass</Filter>
+    </ClInclude>
+    <ClInclude Include="PurchaseBTreeManager.hpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClInclude>
+    <ClInclude Include="InversedIndex.hpp">
+      <Filter>소스 파일\InversedIndexClass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="buffile.cpp">
@@ -194,6 +206,9 @@
     <ClCompile Include="tstbtree.cpp">
       <Filter>소스 파일\ShellClass</Filter>
     </ClCompile>
+    <ClCompile Include="PurchaseBTreeManager.cpp">
+      <Filter>소스 파일\RecordManagerClass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="listOfMember.txt">
@@ -226,6 +241,9 @@
       <Filter>리소스 파일</Filter>
     </None>
     <None Include="testbt.dat">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="fileOfPurchase.ind">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>

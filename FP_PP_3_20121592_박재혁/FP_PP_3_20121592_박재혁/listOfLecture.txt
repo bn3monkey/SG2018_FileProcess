@@ -1,12 +1,13 @@
-11
-000000000001|Math|A|200000|Y|30|Chikorita|Math book
-000000000002|English|B|300000|N|60|Bayleef|English book
-000000000003|Physics|C|400000|Y|90|Meganium|Pyhsics book
-000000000004|Society|D|500000|N|30|Cyndaquil|Society book
-000000000005|Music|A|600000|Y|60|Quilava|Music book
-000000000006|PhysicalTraning|B|100000|N|90|Typhlosion|Physical book
-000000000007|Art|C|200000|Y|30|Totodile|Art book
-000000000008|Korean|D|300000|N|60|Croconaw|Korea book
-000000000009|Technology|A|400000|Y|90|Feraligatr|Techonology book
-000000000010|Computer|B|500000|N|30|Sentret|Computre book
-000000000011|Ethics|C|10000|Y|60|Furret|Ethics book
+12
+01|Math|A|200000|Y|30|Chikorita|Math book
+02|English|B|300000|N|60|Bayleef|English book
+03|Physics|C|400000|Y|90|Meganium|Pyhsics book
+04|Society|D|500000|N|30|Cyndaquil|Society book
+05|Music|A|600000|Y|60|Quilava|Music book
+06|PhysicalTraning|B|100000|N|90|Typhlosion|Physical book
+07|Art|C|200000|Y|30|Totodile|Art book
+08|Korean|D|300000|N|60|Croconaw|Korea book
+09|Technology|A|400000|Y|90|Feraligatr|Techonology book
+10|Computer|B|500000|N|30|Sentret|Computre book
+11|Ethics|C|10000|Y|60|Furret|Ethics book
+12|Test|D|10000|Y|60|Tottle|Test book

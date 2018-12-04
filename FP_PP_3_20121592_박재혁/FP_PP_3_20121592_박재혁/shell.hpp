@@ -88,6 +88,7 @@ int MemberTest();
 int LectureTest();
 int PurchaseTest();
 int LecturePurchaseSystem();
+int DataReset();
 
 enum prog_name
 {
@@ -99,6 +100,7 @@ enum prog_name
 	prog_lecturetest,
 	prog_purchasetest,
 	prog_lecturepurchasesystem,
+	prog_datareset,
 	prog_len,
 };
 

@@ -49,6 +49,25 @@ int LecturePurchaseSystem()
 	return 1;
 }
 
+int DataReset()
+{
+	cout << "Data reset" << endl;
+
+	SchemeTest<Member>("listOfMember.txt", "fileOfMember.dat");
+	SchemeTest<Lecture>("listOfLecture.txt", "fileOfLecture.dat");
+	SchemeTest<Purchase>("listOfPurchase.txt", "fileOfPurchase.dat");
+
+	BTreeFile <Purchase>* PurchaseBTreefile = new BTreeFile<Purchase>(DelimFieldBuffer('|', STDMAXBUF), 16, 4);
+	PurchaseBTreefile->initialize("fileOfPurchase", true);
+	
+	TextIndexedFile <Member>* MemberIndexfile = new TextIndexedFile<Member>(DelimFieldBuffer('|', STDMAXBUF), 16);
+	MemberIndexfile->initialize("fileOfMember", true);
+	
+	TextIndexedFile <Lecture>* LectureIndexfile = new TextIndexedFile<Lecture>(DelimFieldBuffer('|', STDMAXBUF), 16);
+	LectureIndexfile->initialize("fileOfLecture", true);
+	
+	return true;
+}
 
 int (*prog_table[prog_len])() = 
 {
@@ -60,4 +79,5 @@ int (*prog_table[prog_len])() =
 	LectureTest,
 	PurchaseTest,
 	LecturePurchaseSystem,
+	DataReset,
 };

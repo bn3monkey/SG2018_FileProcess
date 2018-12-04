@@ -1,12 +1,12 @@
 #pragma once
-#include "MemberManager.hpp"
+#include "PurchaseBTreeManager.hpp"
 #include "indfile.h"
 class MemberIndexManager : public RecordManager<Member>
 {
 private:
 	Authority auth;
 	Member profile;
-	PurchaseManager* pPurchaseManager;
+	PurchaseBTreeManager* pPurchaseManager;
 	
 public:
 	MemberIndexManager(char* filename, TextIndexedFile<Member>* file) : RecordManager(filename, file)
@@ -17,7 +17,7 @@ public:
 	{
 		pPurchaseManager = nullptr;
 	}
-	inline void setPurchaseManager(PurchaseManager& pm)
+	inline void setPurchaseManager(PurchaseBTreeManager& pm)
 	{
 		pPurchaseManager = &pm;
 	}

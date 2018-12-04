@@ -1,7 +1,8 @@
 #pragma once
 #include "RecordManager.hpp"
+//#include "InversedIndex.hpp"
 
-class PurchaseManager : public RecordManager<Purchase>
+class PurchaseBTreeManager : public RecordManager<Purchase>
 {
 private:
 	char lastid[2];
@@ -10,14 +11,18 @@ private:
 		lastid[0] = 0;
 		lastid[1] = 0;
 		Purchase target;
+
+		std::string data_filename = std::string(filename) + ".dat";
+		if (this->file->Open((char *)data_filename.c_str(), ios::in) == FALSE)
+			return;
 		
-		this->Open(ios::in);
 		while (file->Read(target) != -1)
 		{
 			if (target.getKey(0)[0] > lastid[0])
 				lastid[0] = target.getKey(0)[0];
 		}
-		this->Close();
+
+		this->file->Close();
 
 		lastid[0] += 1;
 		return;
@@ -28,15 +33,17 @@ private:
 	void refreshRedundant() { find_addr = -1; find_nextaddr = -1; }
 	bool findRedundant(const Purchase& source, Purchase& dest, int seed)
 	{
-		this->Open(ios::in);
+		std::string data_filename = std::string(filename) + ".dat";
+		if (this->file->Open((char *)data_filename.c_str(), ios::in) == FALSE)
+			return false;
 
 		bool result;
-		
+
 		//처음이 아니면 이어서 찾는다.
-		if(find_addr != -1)
+		if (find_addr != -1)
 			find_addr = find_nextaddr;
-		
-		while(true)
+
+		while (true)
 		{
 			//읽는다.
 			find_addr = file->Read(dest, find_addr);
@@ -61,17 +68,15 @@ private:
 			}
 		}
 
-		this->Close();
+		this->file->Close();
 
 		return result;
 	}
 	
-	
 public:
-	PurchaseManager(char* filename, RecordFile<Purchase>* file) : RecordManager<Purchase>(filename, file) 
+	PurchaseBTreeManager(char* filename, BTreeFile<Purchase>* file, RecordFile<Purchase>* datafile) : RecordManager<Purchase>(filename, file)
 	{
-		find_addr = -1;
-		find_nextaddr = -1;
+		this->file = datafile;
 	}
 
 	// 조회

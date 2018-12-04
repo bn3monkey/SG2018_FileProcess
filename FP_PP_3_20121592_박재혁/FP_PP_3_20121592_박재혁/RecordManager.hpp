@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Indfile.h"
+#include "btreefile.h"
 #include "BasicClassHeader.h"
 
 enum Authority
@@ -20,51 +21,81 @@ enum RM_errcode
 	RM_noauth, //Member 파일에서 현재 사용자가 삭제되어 시스템을 강제 종료해야할 때
 	RM_not_match, //My 함수에 요구하는 element가 현재 사용자 정보와 일치하지 않을 때
 };
+enum RM_filemode
+{
+	RM_Record,
+	RM_Indexed,
+	RM_BTreed,
+};
 template <class RecType>
 class RecordManager
 {
 protected:
-	int is_indexed;
+	RM_filemode file_mode;
 	RecordFile<RecType>* file;
 	TextIndexedFile<RecType>* indfile;
+	BTreeFile<RecType>* btreefile;
 	RecType current;
 	char* filename;
 	int view_addr;
 
 	inline int Open(int MODE) 
 	{
-		if(is_indexed)
-			return this->indfile->Open(this->filename, MODE);
-		else
+		switch (file_mode)
+		{
+		case RM_Record:
 			return this->file->Open(this->filename, MODE);
+		case RM_Indexed:
+			return this->indfile->Open(this->filename, MODE);
+		case RM_BTreed:
+			return this->btreefile->Open(this->filename, MODE);
+		}
+		return FALSE;
 	}
 	inline int Open(std::string filename, int MODE) 
 	{
 		char name[50];
-		memcpy(name, this->filename, strlen(this->filename));
-		if (is_indexed)
+		memcpy(name, filename.c_str(), strlen(this->filename));
+		switch (file_mode)
+		{
+		case RM_Record:
+			return this->file->Open(name, MODE);
+		case RM_Indexed:
 			return this->indfile->Open(name, MODE);
-		else
-			return this->file->Open(this->filename, MODE);
+		case RM_BTreed:
+			return this->btreefile->Open(name, MODE);
+		}
+		return FALSE;
 	}
 	inline int Close() 
 	{
-		if (is_indexed)
-			return this->indfile->Close();
-		else
-			return this->file->Close(); 
+		switch (file_mode)
+		{
+		case RM_Record:
+			return this->file->Close();
+		case RM_Indexed:
+			return this->indfile->Close(); 
+		case RM_BTreed:
+			return this->btreefile->Close();
+		}
+		return 0;
 	}
 
 public:
 	RecordManager(char* _filename, RecordFile<RecType>* _file) : filename(_filename) , file(_file), view_addr(-1) 
 	{
 		file = _file;
-		is_indexed = 0;
+		file_mode = RM_Record;
 	}
 	RecordManager(char* _filename, TextIndexedFile<RecType>* _file) : filename(_filename), view_addr(-1)
 	{
 		indfile = _file;
-		is_indexed = 1;
+		file_mode = RM_Indexed;
+	}
+	RecordManager(char* _filename, BTreeFile<RecType>* _file) : filename(_filename), view_addr(-1)
+	{
+		btreefile = _file;
+		file_mode = RM_BTreed;
 	}
 	~RecordManager() { 
 	}
@@ -86,7 +117,9 @@ public:
 template <class RecType>
 RM_errcode RecordManager<RecType>::retrieve(std::vector<RecType>& view)
 {
-	this->Open(ios::in);
+	std::string data_filename = std::string(filename) + ".dat";
+	if (this->file->Open((char *)data_filename.c_str(), ios::in) == FALSE)
+		return RM_cannot_read;
 
 	view.clear();
 	RecType m;
@@ -100,7 +133,7 @@ RM_errcode RecordManager<RecType>::retrieve(std::vector<RecType>& view)
 		view.push_back(m);
 	}
 
-	this->Close();
+	this->file->Close();
 
 	return RM_valid;
 }
@@ -108,57 +141,63 @@ RM_errcode RecordManager<RecType>::retrieve(std::vector<RecType>& view)
 template <class RecType>
 RM_errcode RecordManager<RecType>::search(const RecType& source, RecType& dest)
 {
-	this->Open(ios::in);
+	std::string data_filename = std::string(filename) + ".dat";
+	if (this->file->Open((char *)data_filename.c_str(), ios::in) == FALSE)
+		return RM_cannot_read;
 
 	int readaddr = file->Find(source);
 	if (readaddr == -1)
 	{
-		this->Close();
+		this->file->Close();
 		return RM_not_found;
 	}
 	int result = file->Read(dest, readaddr);
 	if (result == -1)
 	{
-		this->Close();
+		this->file->Close();
 		return RM_cannot_read;
 	}
-	this->Close();
+	this->file->Close();
 	return RM_valid;
 }
 // 갱신
 template <class RecType>
 RM_errcode RecordManager<RecType>::update(const RecType& source, int recaddr)
 {
-	this->Open(ios::in | ios::out);
+	std::string data_filename = std::string(filename) + ".dat";
+	if (this->file->Open((char *)data_filename.c_str(), ios::in) == FALSE)
+		return RM_cannot_read;
 
 	int readaddr = file->Update(source, recaddr);
 	if (readaddr == -1)
 	{
-		this->Close();
+		this->file->Close();
 		return RM_not_found;
 	}
-	this->Close();
+	this->file->Close();
 	return RM_valid;
 }
 // 추가
 template <class RecType>
 RM_errcode RecordManager<RecType>::insert(const RecType& source)
 {
-	this->Open(ios::in | ios::out);
+	std::string data_filename = std::string(filename) + ".dat";
+	if (this->file->Open((char *)data_filename.c_str(), ios::in) == FALSE)
+		return RM_cannot_read;
 
 	int readaddr = file->Find(source);
 	if (readaddr != -1)
 	{
-		this->Close();
+		this->file->Close();
 		return RM_redundant;
 	}
 	readaddr = file->Insert(source);
 	if (readaddr == -1)
 	{
-		this->Close();
+		this->file->Close();
 		return RM_cannot_write;
 	}
-	this->Close();
+	this->file->Close();
 	return RM_valid;
 
 }
@@ -166,14 +205,16 @@ RM_errcode RecordManager<RecType>::insert(const RecType& source)
 template <class RecType>
 RM_errcode RecordManager<RecType>::remove(const RecType& source, int recaddr = -1)
 {
-	this->Open(ios::in | ios::out);
+	std::string data_filename = std::string(filename) + ".dat";
+	if (this->file->Open((char *)data_filename.c_str(), ios::in) == FALSE)
+		return RM_cannot_read;
 
 	int readaddr = file->Remove(source, recaddr);
 	if (readaddr == -1)
 	{
-		this->Close();
+		this->file->Close();
 		return RM_not_found;
 	}
-	this->Close();
+	this->file->Close();
 	return RM_valid;
 }

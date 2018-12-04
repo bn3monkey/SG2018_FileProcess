@@ -1,17 +1,17 @@
 #pragma once
-#include "LectureManager.hpp"
+#include "PurchaseBTreeManager.hpp"
 #include "indfile.h"
 class LectureIndexManager : public RecordManager<Lecture>
 {
 private:
-	PurchaseManager* pPurchaseManager;
+	PurchaseBTreeManager* pPurchaseManager;
 public:
 	LectureIndexManager(char* filename, TextIndexedFile<Lecture>* file) : RecordManager(filename, file) {}
 	~LectureIndexManager()
 	{
 		pPurchaseManager = nullptr;
 	}
-	inline void setPurchaseManager(PurchaseManager& pm)
+	inline void setPurchaseManager(PurchaseBTreeManager& pm)
 	{
 		pPurchaseManager = &pm;
 	}

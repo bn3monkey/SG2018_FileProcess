@@ -585,7 +585,7 @@ void ManagerInterface::purchase_retrieve()
 {
 	std::vector<Purchase> list;
 	cout << "----------------------- Purchase retrieve -------------------------" << endl;
-	pPM->retrieve(list);
+	pBPM->retrieve(list);
 	for (size_t i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
@@ -628,7 +628,7 @@ void ManagerInterface::purchase_insert()
 		goto PURCHASE_INSERT_OUT;
 	}
 
-	err = pPM->insert(p);
+	err = pBPM->insert(p);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -680,7 +680,7 @@ void ManagerInterface::purchase_update()
 	if(element.compare("."))
 		p.update_mileage(element.c_str());
 
-	err = pPM->update(p);
+	err = pBPM->update(p);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -718,7 +718,7 @@ void ManagerInterface::purchase_remove()
 		goto PURCHASE_REMOVE_OUT;
 	}
 
-	err = pPM->remove(p);
+	err = pBPM->remove(p);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -759,7 +759,7 @@ void ManagerInterface::purchase_search()
 	cout << "Enter the ID : ";
 	cin >> element;
 	source.update_purchaseid(element);
-	err = pPM->search(source, p);
+	err = pBPM->search(source, p);
 
 	cout << "<<Current Purchase>>" << endl;
 	cout << p;
@@ -959,7 +959,7 @@ void ManagerInterface::purchase_my_retrieve()
 	Member m;
 	cout << "----------------------- Purchase my_retrieve -------------------------" << endl;
 	pIMM->my_retrieve(m);
-	pPM->my_retrieve(m, list);
+	pBPM->my_retrieve(m, list);
 	for (size_t i = 0; i < list.size(); ++i)
 		cout << list[i] << endl;
 
@@ -1008,7 +1008,7 @@ void ManagerInterface::purchase_my_insert()
 	cin >> element;
 	p.update_mileage(element.c_str());
 
-	err = pPM->my_insert(m, p);
+	err = pBPM->my_insert(m, p);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -1058,7 +1058,7 @@ void ManagerInterface::purchase_my_update()
 	cin >> element;
 	p.update_mileage(element.c_str());
 
-	err = pPM->my_update(m, p);
+	err = pBPM->my_update(m, p);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -1095,7 +1095,7 @@ void ManagerInterface::purchase_my_remove()
 		goto PURCHASE_MY_REMOVE_OUT;
 	}
 	pIMM->my_retrieve(m);
-	err = pPM->my_remove(m, p);
+	err = pBPM->my_remove(m, p);
 	if (err == RM_valid)
 	{
 		cout << "Success!" << endl;
@@ -1140,7 +1140,7 @@ void ManagerInterface::purchase_my_search()
 	}
 
 	pIMM->my_retrieve(m);
-	err = pPM->my_search(m, l, p);
+	err = pBPM->my_search(m, l, p);
 
 	cout << "<<Current Purchase>>" << endl;
 	cout << p;
@@ -1420,18 +1420,21 @@ void ManagerInterface::memberindex_search()
 void ManagerInterface::play()
 {
 	RecordFile <Purchase>* Purchasefile = new RecordFile<Purchase>(DelimFieldBuffer('|', STDMAXBUF));
-	pPM = new PurchaseManager("fileOfPurchase.dat", Purchasefile);
+	BTreeFile <Purchase>* PurchaseBTreefile = new BTreeFile<Purchase>(DelimFieldBuffer('|', STDMAXBUF), 16, 4);
+	PurchaseBTreefile->initialize("fileOfPurchase", false);
+	pBPM = new PurchaseBTreeManager("fileOfPurchase", PurchaseBTreefile, Purchasefile);
+	//pBPM->InitializeInversed();
 
 	TextIndexedFile <Member>* MemberIndexfile = new TextIndexedFile<Member>(DelimFieldBuffer('|', STDMAXBUF), 16);
-	MemberIndexfile->initilaize("fileOfMember");
+	MemberIndexfile->initialize("fileOfMember", false);
 	pIMM = new MemberIndexManager("fileOfMember", MemberIndexfile);
 
 	TextIndexedFile <Lecture>* LectureIndexfile = new TextIndexedFile<Lecture>(DelimFieldBuffer('|', STDMAXBUF), 16);
-	MemberIndexfile->initilaize("fileOfLecture");
+	LectureIndexfile->initialize("fileOfLecture", false);
 	pILM = new LectureIndexManager("fileOfLecture", LectureIndexfile);
 	
-	pIMM->setPurchaseManager(*pPM);
-	pILM->setPurchaseManager(*pPM);
+	pIMM->setPurchaseManager(*pBPM);
+	pILM->setPurchaseManager(*pBPM);
 
 	while (!end)
 	{
@@ -1441,6 +1444,9 @@ void ManagerInterface::play()
 	delete MemberIndexfile;
 	delete LectureIndexfile;
 	delete Purchasefile;
-	delete pPM;
+	delete PurchaseBTreefile;
+	delete pBPM;
+	delete pIMM;
+	delete pILM;
 
 }
